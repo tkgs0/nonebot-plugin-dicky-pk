@@ -1,11 +1,7 @@
 from pathlib import Path
+import ujson as json
 import random
 from .utils import fixed_two_decimal_digits
-
-try:
-    import ujson as json
-except ImportError:
-    import json
 
 
 config_template = Path(__file__).parent / 'config.json'

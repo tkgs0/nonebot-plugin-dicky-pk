@@ -1,8 +1,5 @@
 from pathlib import Path
-try:
-    import ujson as json
-except ModuleNotFoundError:
-    import json
+import ujson as json
 from nonebot import on_message, on_command
 from nonebot.matcher import Matcher
 from nonebot.permission import SUPERUSER
