@@ -25,7 +25,7 @@ _✨ NoneBot Dicky-PK ✨_
 
 ## 📖 介绍
 
-魔改自 OPQBot 的群聊小游戏 [CHINCHIN-PK](https://github.com/opq-osc/chinchin-pk)
+移植自 OPQBot 的群聊小游戏 [CHINCHIN-PK](https://github.com/opq-osc/chinchin-pk)
 
 ## 💿 安装
 
