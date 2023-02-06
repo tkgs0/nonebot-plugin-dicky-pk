@@ -27,6 +27,10 @@ _✨ NoneBot Dicky-PK ✨_
 
 移植自 OPQBot 的群聊小游戏 [CHINCHIN-PK](https://github.com/opq-osc/chinchin-pk)
 
+<p>
+<img src="https://raw.githubusercontent.com/tkgs0/nonebot-plugin-dicky-pk/resources/dicky_pk.gif" width="522" alt="你不许参加牛子PK">
+</p>
+
 ## 💿 安装
 
 **nb-cli安装, 包管理器安装  二选一**
