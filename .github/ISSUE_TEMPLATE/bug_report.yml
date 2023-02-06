@@ -1,7 +1,26 @@
-name: 问题汇报
+name: 🐛 问题汇报
 description: 汇报错误或意外行为
 labels: [ bug ]
 body:
+  - type: markdown
+    attributes:
+      value: |
+        [GitHub Issues](https://github.com/tkgs0/nonebot-plugin-dicky-pk/issues) 专门用于错误报告和功能需求，这意味着我们不接受使用问题。如果您打开的问题不符合要求，它将会被无条件关闭。
+
+        有关使用问题，请通过以下途径：
+
+        - 阅读文档以解决
+        - 在社区内寻求他人解答
+        - 在 [GitHub Discussions](https://github.com/tkgs0/nonebot-plugin-dicky-pk/discussions) 上提问
+        - 在网络中搜索是否有人遇到过类似的问题
+
+        如果您不知道如何有效、精准地提出一个问题，我们建议您先阅读[《提问的智慧》](https://github.com/ryanhanwu/How-To-Ask-Questions-The-Smart-Way/blob/main/README-zh_CN.md)。
+
+        最后，请记得遵守我们的社区准则，友好交流。
+
+  - type: markdown
+    attributes:
+      value: "## 注意事项"
   - type: markdown
     attributes:
       value: |
@@ -15,11 +34,50 @@ body:
         2. 使用的 nonebot-plugin-dicky-pk 不是最新的
         3. 大部分“连接失败”问题，请自己排查配置等原因
 
-  - type: textarea
-    id: environment
+  - type: checkboxes
     attributes:
-      label: nonebot-plugin-dicky-pk 、 go-cqhttp 、 nonebot 、 Python 版本及操作系统
-      placeholder: 如果 nonebot-plugin-dicky-pk 不是最新版本还发 issue ，会被直接关闭。
+      label: 报告清单
+      description: 请确认您已遵守所有必选项。
+      options:
+        - label: 我已仔细阅读并了解上述注意事项。
+          required: true
+        - label: 我已使用最新版本测试过，确认问题依旧存在。
+          required: true
+        - label: 我确定在 [GitHub Issues](https://github.com/tkgs0/nonebot-plugin-dicky-pk/issues) 中没有相同或相似的问题。
+          required: true
+
+  - type: input
+    attributes:
+      label: dicky-pk
+      placeholder: 你所使用的 nonebot-plugin-dicky-pk 版本
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: go-cqhttp
+      placeholder: 你所使用的 go-cqhttp 版本
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: nonebot
+      placeholder: 你所使用的 nonebot 版本
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: Python
+      placeholder: 你所使用的 Python 版本
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: 操作系统
+      placeholder: 你所使用的操作系统以及系统版本
     validations:
       required: true
 
@@ -27,16 +85,27 @@ body:
     id: installed_packages
     attributes:
       label: 列出安装的 Python 包
-      placeholder: 把 pip freeze -l 执行的结果贴上来。
+      placeholder: 把 pip freeze -l 执行的结果贴到此处。
       description: 如果你不是通过 pip 或 nb-cli 下载的 nonebot-plugin-dicky-pk ，请把你安装的 Python 包列出来。
     validations:
       required: false
 
   - type: textarea
+    id: problem_description
+    attributes:
+      label: 问题描述
+      description: 请清晰简洁地说明问题是什么，并解释您是如何遇到此问题的，以及您为此做出的尝试。
+    validations:
+      required: true
+
+  - type: textarea
     id: reproduction
     attributes:
-      label: 如何复现
-      placeholder: 是否稳定复现，是的话说明步骤。
+      label: 复现步骤
+      description: |
+        提供能复现此问题的详细操作步骤。如果可能，请尝试提供一个可复现的测试用例，该测试用例是发生问题所需的最低限度。
+        推荐阅读：[《如何创建一个最小的、可复现的示例》](https://stackoverflow.com/help/minimal-reproducible-example)
+      placeholder: "1. 当......\n2. 然后......\n3. 发生......"
     validations:
       required: true
 
@@ -52,12 +121,28 @@ body:
     id: actuality
     attributes:
       label: 实际行为
-      placeholder: 实际的行为是怎么样的？
-      description: |
-        请提供相关的截图、日志、配置、地址（issue 内上传图片或文件可直接粘贴）等信息：
-        - 问题相关截图，例如机器人回复异常时的聊天截图
-        - 问题日志，可截图，可粘贴文本，可上传日志文件，如粘贴文本请务必用 markdown 代码块包裹，**记得脱敏处理，删除 QQ 号等敏感信息**
-        - 可能与 bug 有关的配置内容，如果不确定则不必提供
-        - 出问题的图片
+      placeholder: 实际上发生了什么？
     validations:
       required: true
+
+  - type: textarea
+    id: log
+    attributes:
+      label: 日志信息
+      description: |
+        提供有助于诊断问题的任何日志和完整的错误信息。
+        可截图，可粘贴文本，可上传日志文件，如粘贴文本请务必用 markdown 代码块包裹。
+      placeholder: 请注意将您的敏感信息从日志中过滤或替换。
+    validations:
+      required: true
+
+  - type: textarea
+    id: other
+    attributes:
+      label: 额外补充
+      description: |
+        在此处添加相关的任何其他上下文或截图，或者您觉得有帮助的信息。
+        - 问题相关截图，例如机器人回复异常时的聊天截图
+        - 可能与 bug 有关的配置内容
+    validations:
+      required: false
