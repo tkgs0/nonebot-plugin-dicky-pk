@@ -1,6 +1,6 @@
 from pathlib import Path
 import ujson as json
-from nonebot import on_message, on_command
+from nonebot import on_command
 from nonebot.matcher import Matcher
 from nonebot.permission import SUPERUSER
 from nonebot.adapters.onebot.v11 import (
@@ -40,31 +40,106 @@ _help = [
 ]
 
 
-jjpk = on_message(priority=96, block=False)
-
-@jjpk.handle()
-async def _(bot: Bot, event: GroupMessageEvent, matcher: Matcher):
+def dicky_run(msg: str, bot: Bot, matcher: Matcher, event: GroupMessageEvent):
     if not enablelist['all']:
         return
     if not event.group_id in enablelist['group']:
         return
-    msg = event.get_plaintext()
-    if msg.startswith('/'):
-        msg = msg.replace('/', '', 1)
-        x = 0
-        for i in KEYWORDS.values():
-            for j in i:
-                if j in msg:
-                    x = 1
-        if not x:
-            return
-        uid = event.user_id
-        gid = event.group_id
-        uids = [at.data['qq'] for at in event.get_message()['at']]
-        at_id = uids[0] if uids else None
-        nickname = event.sender.card if event.sender.card else event.sender.nickname
-        fuzzy_match = True
-        chinchin(bot, matcher, msg, uid, gid, at_id, nickname, fuzzy_match)
+    uid = event.user_id
+    gid = event.group_id
+    uids = [at.data['qq'] for at in event.get_message()['at']]
+    at_id = uids[0] if uids else None
+    nickname = event.sender.card if event.sender.card else event.sender.nickname
+    fuzzy_match = True
+    chinchin(bot, matcher, msg, uid, gid, at_id, nickname, fuzzy_match)
+
+
+@on_command(
+    '/'+KEYWORDS['chinchin'][0],
+    aliases=set('/'+i for i in KEYWORDS['chinchin'][1:]),
+    priority=15,
+    block=True
+).handle()
+async def _(bot: Bot, matcher: Matcher, event: GroupMessageEvent):
+    dicky_run(KEYWORDS['chinchin'][0], bot, matcher, event)
+    return
+
+
+@on_command(
+    '/'+KEYWORDS['pk'][0],
+    aliases=set('/'+i for i in KEYWORDS['pk'][1:]),
+    priority=15,
+    block=True
+).handle()
+async def _(bot: Bot, matcher: Matcher, event: GroupMessageEvent):
+    dicky_run(KEYWORDS['pk'][0], bot, matcher, event)
+    return
+
+
+@on_command(
+    '/'+KEYWORDS['lock_me'][0],
+    aliases=set('/'+i for i in KEYWORDS['lock_me'][1:]),
+    priority=15,
+    block=True
+).handle()
+async def _(bot: Bot, matcher: Matcher, event: GroupMessageEvent):
+    dicky_run(KEYWORDS['lock_me'][0], bot, matcher, event)
+    return
+
+
+@on_command(
+    '/'+KEYWORDS['lock'][0],
+    aliases=set('/'+i for i in KEYWORDS['lock'][1:]),
+    priority=15,
+    block=True
+).handle()
+async def _(bot: Bot, matcher: Matcher, event: GroupMessageEvent):
+    dicky_run(KEYWORDS['lock'][0], bot, matcher, event)
+    return
+
+
+@on_command(
+    '/'+KEYWORDS['glue'][0],
+    aliases=set('/'+i for i in KEYWORDS['glue'][1:]),
+    priority=15,
+    block=True
+).handle()
+async def _(bot: Bot, matcher: Matcher, event: GroupMessageEvent):
+    dicky_run(KEYWORDS['glue'][0], bot, matcher, event)
+    return
+
+
+@on_command(
+    '/'+KEYWORDS['see_chinchin'][0],
+    aliases=set('/'+i for i in KEYWORDS['see_chinchin'][1:]),
+    priority=15,
+    block=True
+).handle()
+async def _(bot: Bot, matcher: Matcher, event: GroupMessageEvent):
+    dicky_run(KEYWORDS['see_chinchin'][0], bot, matcher, event)
+    return
+
+
+@on_command(
+    '/'+KEYWORDS['sign_up'][0],
+    aliases=set('/'+i for i in KEYWORDS['sign_up'][1:]),
+    priority=15,
+    block=True
+).handle()
+async def _(bot: Bot, matcher: Matcher, event: GroupMessageEvent):
+    dicky_run(KEYWORDS['sign_up'][0], bot, matcher, event)
+    return
+
+
+@on_command(
+    '/'+KEYWORDS['ranking'][0],
+    aliases=set('/'+i for i in KEYWORDS['ranking'][1:]),
+    priority=15,
+    block=True
+).handle()
+async def _(bot: Bot, matcher: Matcher, event: GroupMessageEvent):
+    dicky_run(KEYWORDS['ranking'][0], bot, matcher, event)
+    return
 
 
 jjpk_help = on_command(
@@ -82,6 +157,7 @@ async def _(event: GroupMessageEvent):
     await jjpk_help.finish('\n'.join(_help))
 
 
+
 def set_enable(gid: int, en: bool):
     if en:
         enablelist['group'].append(gid)
@@ -89,7 +165,6 @@ def set_enable(gid: int, en: bool):
     else:
         enablelist['group'] = [uid for uid in enablelist['group'] if not uid == gid]
     save_conf()
-
 
 
 enable_jjpk = on_command(

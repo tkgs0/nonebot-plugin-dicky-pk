@@ -39,5 +39,5 @@ def send_message(
 ):
     loop = asyncio.get_running_loop()
     loop.create_task(bot.send_group_msg(group_id=group, message=Message(message)))
-    matcher.stop_propagation()
+    # matcher.stop_propagation()
     return
