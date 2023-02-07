@@ -28,7 +28,7 @@ class Config():
         global cache
         if cache:
             return cache
-        with open(config_file_path, 'r') as f:
+        with open(config_file_path, 'r', encoding="utf-8") as f:
             cache = json.load(f)
             return cache
 
