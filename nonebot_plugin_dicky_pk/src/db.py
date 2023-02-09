@@ -1,6 +1,7 @@
 from pathlib import Path
 from .utils import get_now_time, is_date_outed, fixed_two_decimal_digits
 from .config import Config
+from .rebirth_view import RebirthSystem_View
 import sqlite3
 
 sql_ins = None
@@ -13,9 +14,7 @@ class Paths():
 
     @staticmethod
     def base_db_dir():
-        _file = Path() / 'data' / 'chinchin_pk' / 'data-v2'
-        _file.mkdir(parents=True, exist_ok=True)
-        return _file
+        return Path() / 'data' / 'chinchin_pk' / 'data-v2'
 
     @classmethod
     def sqlite_path(cls):
@@ -26,7 +25,7 @@ class MigrationHelper():
     @staticmethod
     def old_data_check():
         # check old v1 data exist and tip
-        if Paths.base_db_path_v1().exists:
+        if Paths.base_db_path_v1().exists():
             print(
                 '[Chinchin::Deprecated]: 目录 src/data-v2 新数据已经初始化，旧 v1 版本数据 src/data 已经不再使用，可以备份后手动删除！')
             print(
@@ -89,9 +88,290 @@ class Sql_UserInfo():
         sql_ins.conn.commit()
 
 
+class Sql_rebirth():
+    @staticmethod
+    def _sql_create_table():
+        return 'create table if not exists `rebirth` (`qq` bigint, `latest_rebirth_time` varchar(255), `level` integer, primary key (`qq`));'
+
+    @staticmethod
+    def _sql_insert_single_data(data: dict):
+        return f'insert into `rebirth` (`level`, `latest_rebirth_time`, `qq`) values (:level, :latest_rebirth_time, {data["qq"]});'
+
+    @staticmethod
+    def _sql_select_single_data(qq: int):
+        return f'select * from `rebirth` where `qq` = {qq};'
+
+    @staticmethod
+    def _sql_batch_select_data(qqs: list):
+        return f'select * from `rebirth` where `qq` in {tuple(qqs)};'
+
+    @staticmethod
+    def _sql_check_table_exists():
+        return 'select count(*) from sqlite_master where type = "table" and name = "rebirth";'
+
+    @staticmethod
+    def _sql_update_single_data(data: dict):
+        return f'update `rebirth` set `level` = :level, `latest_rebirth_time` = :latest_rebirth_time where `qq` = {data["qq"]};'
+
+    @staticmethod
+    def _sql_delete_single_data(qq: int):
+        return f'delete from `rebirth` where `qq` = {qq};'
+
+    @staticmethod
+    def deserialize(data: tuple):
+        return {
+            'qq': data[0],
+            'latest_rebirth_time': data[1],
+            'level': data[2],
+        }
+
+    @classmethod
+    def select_single_data(cls, qq: int):
+        sql_ins.cursor.execute(cls._sql_select_single_data(qq))
+        one = sql_ins.cursor.fetchone()
+        if one is None:
+            return None
+        return cls.deserialize(one)
+
+    @classmethod
+    def insert_single_data(cls, data: dict):
+        sql_ins.cursor.execute(cls._sql_insert_single_data(data), data)
+        sql_ins.conn.commit()
+
+    @classmethod
+    def update_single_data(cls, data: dict):
+        sql_ins.cursor.execute(cls._sql_update_single_data(data), data)
+        sql_ins.conn.commit()
+
+    @classmethod
+    def delete_single_data(cls, qq: int):
+        sql_ins.cursor.execute(cls._sql_delete_single_data(qq))
+        sql_ins.conn.commit()
+
+    @classmethod
+    def select_batch_data_by_qqs(cls, qqs: list):
+        sql_ins.cursor.execute(cls._sql_batch_select_data(qqs))
+        return [cls.deserialize(data) for data in sql_ins.cursor.fetchall()]
+
+
+class DB_Rebirth():
+    @staticmethod
+    def get_rebirth_data(qq: int):
+        return Sql_rebirth.select_single_data(qq)
+
+    @staticmethod
+    def insert_rebirth_data(data: dict):
+        Sql_rebirth.insert_single_data(data)
+
+    @staticmethod
+    def update_rebirth_data(data: dict):
+        Sql_rebirth.update_single_data(data)
+
+
+class Sql_badge():
+
+    @staticmethod
+    def _sql_create_table():
+        return 'create table if not exists `badge` (`qq` bigint, `badge_ids` varchar(255), `glue_me_count` bigint, `glue_target_count` bigint, `glue_plus_count` bigint, `glue_plus_length_total` bigint, `glue_punish_count` bigint, `glue_punish_length_total` bigint, `pk_win_count` bigint, `pk_lose_count` bigint, `pk_plus_length_total` bigint, `pk_punish_length_total` bigint, `lock_me_count` bigint, `lock_target_count` bigint, `lock_plus_count` bigint, `lock_punish_count` bigint, `lock_plus_length_total` bigint, `lock_punish_length_total` bigint, primary key (`qq`));'
+
+    @staticmethod
+    def _sql_insert_single_data(data: dict):
+        return f'insert into `badge` (`qq`, `badge_ids`, `glue_me_count`, `glue_target_count`, `glue_plus_count`, `glue_plus_length_total`, `glue_punish_count`, `glue_punish_length_total`, `pk_win_count`, `pk_lose_count`, `pk_plus_length_total`, `pk_punish_length_total`, `lock_me_count`, `lock_target_count`, `lock_plus_count`, `lock_punish_count`, `lock_plus_length_total`, `lock_punish_length_total`) values ({data["qq"]}, :badge_ids, :glue_me_count, :glue_target_count, :glue_plus_count, :glue_plus_length_total, :glue_punish_count, :glue_punish_length_total, :pk_win_count, :pk_lose_count, :pk_plus_length_total, :pk_punish_length_total, :lock_me_count, :lock_target_count, :lock_plus_count, :lock_punish_count, :lock_plus_length_total, :lock_punish_length_total);'
+
+    @staticmethod
+    def _sql_select_single_data(qq: int):
+        return f'select * from `badge` where `qq` = {qq};'
+
+    @staticmethod
+    def _sql_batch_select_data(qqs: list):
+        return f'select * from `badge` where `qq` in {tuple(qqs)};'
+
+    @staticmethod
+    def _sql_update_single_data(data: dict):
+        return f'update `badge` set `badge_ids` = :badge_ids, `glue_me_count` = :glue_me_count, `glue_target_count` = :glue_target_count, `glue_plus_count` = :glue_plus_count, `glue_plus_length_total` = :glue_plus_length_total, `glue_punish_count` = :glue_punish_count, `glue_punish_length_total` = :glue_punish_length_total, `pk_win_count` = :pk_win_count, `pk_lose_count` = :pk_lose_count, `pk_plus_length_total` = :pk_plus_length_total, `pk_punish_length_total` = :pk_punish_length_total, `lock_me_count` = :lock_me_count, `lock_target_count` = :lock_target_count, `lock_plus_count` = :lock_plus_count, `lock_punish_count` = :lock_punish_count, `lock_plus_length_total` = :lock_plus_length_total, `lock_punish_length_total` = :lock_punish_length_total where `qq` = {data["qq"]};'
+
+    @staticmethod
+    def _sql_delete_single_data(qq: int):
+        return f'delete from `badge` where `qq` = {qq};'
+
+    @staticmethod
+    def _sql_check_table_exist():
+        return 'select count(*) from sqlite_master where type = "table" and name = "badge";'
+
+    @staticmethod
+    def deserialize(data: tuple):
+        return {
+            "qq": data[0],
+            "badge_ids": data[1],
+            "glue_me_count": data[2],
+            "glue_target_count": data[3],
+            "glue_plus_count": data[4],
+            "glue_plus_length_total": data[5],
+            "glue_punish_count": data[6],
+            "glue_punish_length_total": data[7],
+            "pk_win_count": data[8],
+            "pk_lose_count": data[9],
+            "pk_plus_length_total": data[10],
+            "pk_punish_length_total": data[11],
+            "lock_me_count": data[12],
+            "lock_target_count": data[13],
+            "lock_plus_count": data[14],
+            "lock_punish_count": data[15],
+            "lock_plus_length_total": data[16],
+            "lock_punish_length_total": data[17],
+        }
+
+    @classmethod
+    def select_single_data(cls, qq: int):
+        sql_ins.cursor.execute(cls._sql_select_single_data(qq))
+        one = sql_ins.cursor.fetchone()
+        if one is None:
+            return None
+        return cls.deserialize(one)
+
+    @classmethod
+    def insert_single_data(cls, data: dict):
+        sql_ins.cursor.execute(cls._sql_insert_single_data(data), data)
+        sql_ins.conn.commit()
+
+    @classmethod
+    def update_single_data(cls, data: dict):
+        sql_ins.cursor.execute(cls._sql_update_single_data(data), data)
+        sql_ins.conn.commit()
+
+    @classmethod
+    def delete_single_data(cls, qq: int):
+        sql_ins.cursor.execute(cls._sql_delete_single_data(qq))
+        sql_ins.conn.commit()
+
+    @classmethod
+    def select_batch_data_by_qqs(cls, qqs: list):
+        sql_ins.cursor.execute(cls._sql_batch_select_data(qqs))
+        return [cls.deserialize(data) for data in sql_ins.cursor.fetchall()]
+
+
+class DB_Badge():
+
+    @staticmethod
+    def init_user_data(qq: int):
+        data = Sql_badge.select_single_data(qq)
+        if data is None:
+            data = {
+                "qq": qq,
+                "badge_ids": "",
+                "glue_me_count": 0,
+                "glue_target_count": 0,
+                "glue_plus_count": 0,
+                "glue_plus_length_total": 0,
+                "glue_punish_count": 0,
+                "glue_punish_length_total": 0,
+                "pk_win_count": 0,
+                "pk_lose_count": 0,
+                "pk_plus_length_total": 0,
+                "pk_punish_length_total": 0,
+                "lock_me_count": 0,
+                "lock_target_count": 0,
+                "lock_plus_count": 0,
+                "lock_punish_count": 0,
+                "lock_plus_length_total": 0,
+                "lock_punish_length_total": 0
+            }
+            Sql_badge.insert_single_data(data)
+
+    @classmethod
+    def plus_value_by_ley(cls, qq: int, key: str, plus_value: int):
+        data = Sql_badge.select_single_data(qq)
+        if data is None:
+            cls.init_user_data(qq)
+            cls.plus_value_by_ley(qq, key, plus_value)
+        else:
+            new_value = data[key] + plus_value
+            # if total data, fixed 2
+            if key.endswith("total"):
+                new_value = fixed_two_decimal_digits(new_value, to_number=True)
+            data[key] = new_value
+            Sql_badge.update_single_data(data)
+
+    @classmethod
+    def record_glue_me_count(cls, qq: int):
+        cls.plus_value_by_ley(qq, "glue_me_count", 1)
+
+    @classmethod
+    def record_glue_target_count(cls, qq: int):
+        cls.plus_value_by_ley(qq, "glue_target_count", 1)
+
+    @classmethod
+    def record_glue_plus_count(cls, qq: int):
+        cls.plus_value_by_ley(qq, "glue_plus_count", 1)
+
+    @classmethod
+    def record_glue_plus_length_total(cls, qq: int, length: float):
+        cls.plus_value_by_ley(qq, "glue_plus_length_total", length)
+
+    @classmethod
+    def record_glue_punish_count(cls, qq: int):
+        cls.plus_value_by_ley(qq, "glue_punish_count", 1)
+
+    @classmethod
+    def record_glue_punish_length_total(cls, qq: int, length: float):
+        cls.plus_value_by_ley(qq, "glue_punish_length_total", length)
+
+    @classmethod
+    def record_pk_win_count(cls, qq: int):
+        cls.plus_value_by_ley(qq, "pk_win_count", 1)
+
+    @classmethod
+    def record_pk_lose_count(cls, qq: int):
+        cls.plus_value_by_ley(qq, "pk_lose_count", 1)
+
+    @classmethod
+    def record_pk_plus_length_total(cls, qq: int, length: float):
+        cls.plus_value_by_ley(qq, "pk_plus_length_total", length)
+
+    @classmethod
+    def record_pk_punish_length_total(cls, qq: int, length: float):
+        cls.plus_value_by_ley(qq, "pk_punish_length_total", length)
+
+    @classmethod
+    def record_lock_me_count(cls, qq: int):
+        cls.plus_value_by_ley(qq, "lock_me_count", 1)
+
+    @classmethod
+    def record_lock_target_count(cls, qq: int):
+        cls.plus_value_by_ley(qq, "lock_target_count", 1)
+
+    @classmethod
+    def record_lock_plus_count(cls, qq: int):
+        cls.plus_value_by_ley(qq, "lock_plus_count", 1)
+
+    @classmethod
+    def record_lock_punish_count(cls, qq: int):
+        cls.plus_value_by_ley(qq, "lock_punish_count", 1)
+
+    @classmethod
+    def record_lock_plus_length_total(cls, qq: int, length: float):
+        cls.plus_value_by_ley(qq, "lock_plus_length_total", length)
+
+    @classmethod
+    def record_lock_punish_length_total(cls, qq: int, length: float):
+        cls.plus_value_by_ley(qq, "lock_punish_length_total", length)
+
+    @staticmethod
+    def get_badge_data(qq: int):
+        return Sql_badge.select_single_data(qq)
+
+    @staticmethod
+    def update_badge_ids(qq: int, badge_ids: list):
+        data = Sql_badge.select_single_data(qq)
+        data['badge_ids'] = badge_ids
+        Sql_badge.update_single_data(data)
+
+
 class Sql():
 
     sub_table_info = Sql_UserInfo()
+    sub_table_rebirth = Sql_rebirth()
+    sub_table_badge = Sql_badge()
 
     def __init__(self):
         self.sqlite_path = Paths.sqlite_path()
@@ -175,20 +455,23 @@ class Sql():
 
     @classmethod
     def check_table_exists(cls):
-        # users table exists
-        sql_ins.cursor.execute(cls.__sql_check_table_exists())
-        one = sql_ins.cursor.fetchone()
-        is_table_exists = one[0] == 1
-        if not is_table_exists:
-            sql_ins.cursor.execute(sql_ins.__sql_create_table())
-            sql_ins.conn.commit()
-        # info table exists
-        sql_ins.cursor.execute(cls.sub_table_info._sql_check_table_exists())
-        one = sql_ins.cursor.fetchone()
-        is_table_exists = one[0] == 1
-        if not is_table_exists:
-            sql_ins.cursor.execute(cls.sub_table_info._sql_create_table())
-            sql_ins.conn.commit()
+        create_table_funs = [
+            [cls.__sql_check_table_exists, cls.__sql_create_table],
+            [cls.sub_table_info._sql_check_table_exists,
+                cls.sub_table_info._sql_create_table],
+            [cls.sub_table_rebirth._sql_check_table_exists,
+                cls.sub_table_rebirth._sql_create_table],
+            [cls.sub_table_badge._sql_check_table_exist,
+                cls.sub_table_badge._sql_create_table]
+        ]
+        # check users, info, rebirth table exists
+        for funs in create_table_funs:
+            sql_ins.cursor.execute(funs[0]())
+            one = sql_ins.cursor.fetchone()
+            is_table_exists = one[0] == 1
+            if not is_table_exists:
+                sql_ins.cursor.execute(funs[1]())
+                sql_ins.conn.commit()
 
     @classmethod
     def update_data_by_qq(cls, data: dict):
@@ -200,8 +483,9 @@ class Sql():
         global sql_ins
         if sql_ins:
             return sql_ins
+        Paths.base_db_dir().mkdir(parents=True, exist_ok=True)
         if not Paths.sqlite_path().is_file():
-            open(Paths.sqlite_path(), 'w').close()
+            Paths.sqlite_path().write_text('')
         sql_ins = Sql()
         sql_ins.check_table_exists()
         MigrationHelper.old_data_check()
@@ -240,7 +524,16 @@ class DataUtils():
         return {one['qq']: one for one in data}
 
     @classmethod
-    def merge_data(cls, datas: list):
+    def merge_data(cls, data_1: dict, data_2: dict):
+        # handle None
+        if data_1 is None:
+            data_1 = {}
+        if data_2 is None:
+            data_2 = {}
+        return cls.__assign(data_1, data_2)
+
+    @classmethod
+    def merge_data_list(cls, datas: list):
         maps = [cls.__make_qq_to_data_map(one) for one in datas]
         for key in maps[0].keys():
             for i in range(1, len(maps)):
@@ -255,6 +548,8 @@ class DataUtils():
 class DB():
 
     sub_db_info = DB_UserInfo()
+    sub_db_rebirth = DB_Rebirth()
+    sub_db_badge = DB_Badge()
     utils = DataUtils()
 
     @staticmethod
@@ -263,7 +558,14 @@ class DB():
 
     @staticmethod
     def load_data(qq: int):
-        return Sql.select_data_by_qq(qq)
+        # main data
+        user_table_data = Sql.select_data_by_qq(qq)
+        if user_table_data is None:
+            return None
+        # sub data
+        rebirth_table_data = Sql.sub_table_rebirth.select_single_data(qq)
+        merged_data = DB.utils.merge_data(user_table_data, rebirth_table_data)
+        return merged_data
 
     @classmethod
     def is_registered(cls, qq: int):
@@ -279,6 +581,9 @@ class DB():
 
     @classmethod
     def length_increase(cls, qq: int, length: float):
+        """
+          only allow `main.py` call
+        """
         user_data = cls.load_data(qq)
         user_data['length'] += length
         # ensure fixed 2
@@ -288,14 +593,28 @@ class DB():
 
     @classmethod
     def length_decrease(cls, qq: int, length: float):
+        """
+          only allow `main.py` call
+        """
         user_data = cls.load_data(qq)
-        user_data['length'] -= length
-        # ensure fixed 2
-        user_data['length'] = fixed_two_decimal_digits(
-            user_data['length'], to_number=True)
+        will_punish_length = 0
+        pure_length = user_data['length']
+        # 不能把转生者打降转
+        level = user_data.get('level')
+        if level is not None:
+            length_view = RebirthSystem_View.get_rebirth_view_by_level(
+                level=level,
+                length=pure_length
+            )
+            pure_length = length_view['pure_length']
         # TODO: 禁止负值，更好的提示
-        if user_data['length'] < 0:
-            user_data['length'] = 0
+        if (pure_length - length) < 0:
+            will_punish_length = pure_length
+        else:
+            will_punish_length = length
+        will_punish_length = fixed_two_decimal_digits(
+            will_punish_length, to_number=True)
+        user_data['length'] -= will_punish_length
         cls.write_data(user_data)
 
     @classmethod
@@ -372,6 +691,9 @@ class DB():
 
     @classmethod
     def is_pk_protected(cls, qq: int):
+        """
+          TODO: 对转生者可以刷分，以后需要限制
+        """
         user_data = cls.load_data(qq)
         min_length = Config.get_config('pk_guard_chinchin_length')
         if user_data['length'] <= min_length:
@@ -382,8 +704,20 @@ class DB():
     def get_top_users():
         top_users = Sql.get_top_users()
         qqs = [one["qq"] for one in top_users]
+        # info
         info_list = Sql.sub_table_info.select_batch_data_by_qqs(qqs)
-        merged = DB.utils.merge_data([top_users, info_list])
+        # rebirth
+        rebirth_list = Sql.sub_table_rebirth.select_batch_data_by_qqs(qqs)
+        # badge
+        badge_list = Sql.sub_table_badge.select_batch_data_by_qqs(qqs)
+        badge_list_picked = []
+        for one in badge_list:
+            badge_list_picked.append({
+                'qq': one['qq'],
+                'badge_ids': one['badge_ids']
+            })
+        merged = DB.utils.merge_data_list(
+            [top_users, info_list, rebirth_list, badge_list_picked])
         return merged
 
 

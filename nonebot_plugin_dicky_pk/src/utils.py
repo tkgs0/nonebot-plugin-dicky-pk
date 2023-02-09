@@ -71,3 +71,17 @@ def get_object_values(obj: dict):
         else:
             ret.append(v)
     return ret
+
+
+def is_number(s: str):
+    try:
+        float(s)
+        return True
+    except ValueError:
+        pass
+    try:
+        import unicodedata
+        unicodedata.numeric(s)
+        return True
+    except (TypeError, ValueError):
+        pass

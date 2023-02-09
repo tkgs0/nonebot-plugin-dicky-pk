@@ -1,10 +1,11 @@
 from pathlib import Path
 import ujson as json
 from nonebot import on_command
-from nonebot.matcher import Matcher
+from nonebot.params import CommandArg
 from nonebot.permission import SUPERUSER
 from nonebot.adapters.onebot.v11 import (
     Bot,
+    Message,
     MessageEvent,
     GroupMessageEvent,
     GROUP_OWNER,
@@ -37,10 +38,12 @@ _help = [
     '/看他牛子(/看看牛子) @用户',
     '/注册牛子',
     '/牛子排名(/牛子排行)',
+    '/牛子转生',
+    '/牛子成就',
 ]
 
 
-def dicky_run(msg: str, bot: Bot, matcher: Matcher, event: GroupMessageEvent):
+def dicky_run(msg: str, bot: Bot, event: GroupMessageEvent):
     if not enablelist['all']:
         return
     if not event.group_id in enablelist['group']:
@@ -51,17 +54,24 @@ def dicky_run(msg: str, bot: Bot, matcher: Matcher, event: GroupMessageEvent):
     at_id = uids[0] if uids else None
     nickname = event.sender.card if event.sender.card else event.sender.nickname
     fuzzy_match = True
-    chinchin(bot, matcher, msg, uid, gid, at_id, nickname, fuzzy_match)
+    chinchin(bot, msg, uid, gid, at_id, nickname, fuzzy_match)
 
 
-@on_command(
-    '/'+KEYWORDS['chinchin'][0],
-    aliases=set('/'+i for i in KEYWORDS['chinchin'][1:]),
+get_chinchin = on_command(
+    '/牛子',
     priority=15,
     block=True
-).handle()
-async def _(bot: Bot, matcher: Matcher, event: GroupMessageEvent):
-    dicky_run(KEYWORDS['chinchin'][0], bot, matcher, event)
+)
+
+@get_chinchin.handle()
+async def _(bot: Bot, event: GroupMessageEvent, arg: Message = CommandArg()):
+    if not enablelist['all']:
+        return
+    if not event.group_id in enablelist['group']:
+        return
+    if (msg := arg.extract_plain_text()).startswith('帮助'):
+        await get_chinchin.finish('\n'.join(_help))
+    dicky_run('牛子'+msg, bot, event)
     return
 
 
@@ -71,8 +81,8 @@ async def _(bot: Bot, matcher: Matcher, event: GroupMessageEvent):
     priority=15,
     block=True
 ).handle()
-async def _(bot: Bot, matcher: Matcher, event: GroupMessageEvent):
-    dicky_run(KEYWORDS['pk'][0], bot, matcher, event)
+async def _(bot: Bot, event: GroupMessageEvent):
+    dicky_run(KEYWORDS['pk'][0], bot, event)
     return
 
 
@@ -82,8 +92,8 @@ async def _(bot: Bot, matcher: Matcher, event: GroupMessageEvent):
     priority=15,
     block=True
 ).handle()
-async def _(bot: Bot, matcher: Matcher, event: GroupMessageEvent):
-    dicky_run(KEYWORDS['lock_me'][0], bot, matcher, event)
+async def _(bot: Bot, event: GroupMessageEvent):
+    dicky_run(KEYWORDS['lock_me'][0], bot, event)
     return
 
 
@@ -93,8 +103,8 @@ async def _(bot: Bot, matcher: Matcher, event: GroupMessageEvent):
     priority=15,
     block=True
 ).handle()
-async def _(bot: Bot, matcher: Matcher, event: GroupMessageEvent):
-    dicky_run(KEYWORDS['lock'][0], bot, matcher, event)
+async def _(bot: Bot, event: GroupMessageEvent):
+    dicky_run(KEYWORDS['lock'][0], bot, event)
     return
 
 
@@ -104,8 +114,8 @@ async def _(bot: Bot, matcher: Matcher, event: GroupMessageEvent):
     priority=15,
     block=True
 ).handle()
-async def _(bot: Bot, matcher: Matcher, event: GroupMessageEvent):
-    dicky_run(KEYWORDS['glue'][0], bot, matcher, event)
+async def _(bot: Bot, event: GroupMessageEvent):
+    dicky_run(KEYWORDS['glue'][0], bot, event)
     return
 
 
@@ -115,8 +125,8 @@ async def _(bot: Bot, matcher: Matcher, event: GroupMessageEvent):
     priority=15,
     block=True
 ).handle()
-async def _(bot: Bot, matcher: Matcher, event: GroupMessageEvent):
-    dicky_run(KEYWORDS['see_chinchin'][0], bot, matcher, event)
+async def _(bot: Bot, event: GroupMessageEvent):
+    dicky_run(KEYWORDS['see_chinchin'][0], bot, event)
     return
 
 
@@ -126,36 +136,9 @@ async def _(bot: Bot, matcher: Matcher, event: GroupMessageEvent):
     priority=15,
     block=True
 ).handle()
-async def _(bot: Bot, matcher: Matcher, event: GroupMessageEvent):
-    dicky_run(KEYWORDS['sign_up'][0], bot, matcher, event)
+async def _(bot: Bot, event: GroupMessageEvent):
+    dicky_run(KEYWORDS['sign_up'][0], bot, event)
     return
-
-
-@on_command(
-    '/'+KEYWORDS['ranking'][0],
-    aliases=set('/'+i for i in KEYWORDS['ranking'][1:]),
-    priority=15,
-    block=True
-).handle()
-async def _(bot: Bot, matcher: Matcher, event: GroupMessageEvent):
-    dicky_run(KEYWORDS['ranking'][0], bot, matcher, event)
-    return
-
-
-jjpk_help = on_command(
-    '/牛子帮助',
-    priority=5,
-    block=True
-)
-
-@jjpk_help.handle()
-async def _(event: GroupMessageEvent):
-    if not enablelist['all']:
-        return
-    if not event.group_id in enablelist['group']:
-        return
-    await jjpk_help.finish('\n'.join(_help))
-
 
 
 def set_enable(gid: int, en: bool):

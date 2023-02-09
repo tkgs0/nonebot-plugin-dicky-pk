@@ -1,75 +1,193 @@
 {
-    "##new_chinchin_length_random": "注册新牛子的长度范围",
-    "new_chinchin_length_random_min": 8,
-    "new_chinchin_length_random_max": 15,
+  "##new_chinchin_length_random": "注册新牛子的长度范围",
+  "new_chinchin_length_random_min": 8,
+  "new_chinchin_length_random_max": 15,
 
-    "##lock_me_chinchin_min": "🔒自己需要的最小长度",
-    "lock_me_chinchin_min": 20,
+  "##lock_me_chinchin_min": "🔒自己需要的最小长度",
+  "lock_me_chinchin_min": 20,
 
-    "##lock_daily_max": "每天🔒的上限次数，包括🔒自己和别人",
-    "lock_daily_max": 6,
-    "##cd_trigger_lock": "一旦🔒过了 rate ( [0, 1] ) 百分比的数量，之后每次🔒就需要等 time 分钟的 cd",
-    "cd_trigger_lock_time": 60,
-    "cd_trigger_lock_rate": 0.5,
+  "##lock_daily_max": "每天🔒的上限次数，包括🔒自己和别人",
+  "lock_daily_max": 6,
+  "##cd_trigger_lock": "一旦🔒过了 rate ( [0, 1] ) 百分比的数量，之后每次🔒就需要等 time 分钟的 cd",
+  "cd_trigger_lock_time": 60,
+  "cd_trigger_lock_rate": 0.5,
 
-    "##pk_daily_max": "每天pk的上限次数，包括pk自己和别人",
-    "pk_daily_max": 6,
-    "##cd_trigger_pk": "一旦pk过了 rate ( [0, 1] ) 百分比的数量，之后每次pk就需要等 time 分钟的 cd",
-    "cd_trigger_pk_time": 60,
-    "cd_trigger_pk_rate": 0.5,
+  "##pk_daily_max": "每天pk的上限次数，包括pk自己和别人",
+  "pk_daily_max": 6,
+  "##cd_trigger_pk": "一旦pk过了 rate ( [0, 1] ) 百分比的数量，之后每次pk就需要等 time 分钟的 cd",
+  "cd_trigger_pk_time": 60,
+  "cd_trigger_pk_rate": 0.5,
 
-    "##glue_daily": "每天打胶的上限次数，包括打胶自己和别人",
-    "glue_daily_max": 6,
-    "##cd_trigger_glue": "一旦打胶过了 rate ( [0, 1] ) 百分比的数量，之后每次打胶就需要等 time 分钟的 cd",
-    "cd_trigger_glue_time": 60,
-    "cd_trigger_glue_rate": 0.5,
+  "##glue_daily": "每天打胶的上限次数，包括打胶自己和别人",
+  "glue_daily_max": 6,
+  "##cd_trigger_glue": "一旦打胶过了 rate ( [0, 1] ) 百分比的数量，之后每次打胶就需要等 time 分钟的 cd",
+  "cd_trigger_glue_time": 60,
+  "cd_trigger_glue_rate": 0.5,
 
-    "##lock_me_negative_prob": "🔒自己长度不够的处罚几率 [0, 1]",
-    "lock_me_negative_prob": 0.7,
+  "##lock_me_negative_prob": "🔒自己长度不够的处罚几率 [0, 1]",
+  "lock_me_negative_prob": 0.7,
 
-    "##lock_me_negative": "🔒自己长度不够的处罚范围",
-    "lock_me_negative_min": 0.1,
-    "lock_me_negative_max": 1,
+  "##lock_me_negative": "🔒自己长度不够的处罚范围",
+  "lock_me_negative_min": 0.1,
+  "lock_me_negative_max": 1,
 
-    "##lock_plus": "🔒牛子的增加长度范围，包括🔒自己和别人",
-    "lock_plus_min": 0.1,
-    "lock_plus_max": 1,
+  "##lock_plus": "🔒牛子的增加长度范围，包括🔒自己和别人",
+  "lock_plus_min": 0.1,
+  "lock_plus_max": 1,
 
-    "##glue_plus": "打胶增加长度的范围",
-    "glue_plus_min": 0.5,
-    "glue_plus_max": 1.5,
+  "##glue_plus": "打胶增加长度的范围",
+  "glue_plus_min": 0.5,
+  "glue_plus_max": 1.5,
 
-    "##glue_self_negative_prob": "打胶自己失败的概率 [0, 1]",
-    "glue_self_negative_prob": 0.2,
-    "glue_self_negative_min": 0.1,
-    "glue_self_negative_max": 0.5,
+  "##glue_self_negative_prob": "打胶自己失败的概率 [0, 1]",
+  "glue_self_negative_prob": 0.2,
+  "glue_self_negative_min": 0.1,
+  "glue_self_negative_max": 0.5,
 
-    "##pk_unstable_range": "pk两者牛子相差该值时，pk胜负不稳定，会55开随机决定胜负",
-    "pk_unstable_range": 5,
+  "##pk_unstable_range": "pk两者牛子相差该值时，pk胜负不稳定，会55开随机决定胜负",
+  "pk_unstable_range": 5,
 
-    "##pk_plus": "pk胜利后增加长度的范围",
-    "pk_plus_min": 0.5,
-    "pk_plus_max": 1.5,
+  "##pk_plus": "pk胜利后增加长度的范围",
+  "pk_plus_min": 0.5,
+  "pk_plus_max": 1.5,
 
-    "##pk_negative": "pk失败者减少长度的范围",
-    "pk_negative_min": 0.3,
-    "pk_negative_max": 1,
+  "##pk_negative": "pk失败者减少长度的范围",
+  "pk_negative_min": 0.3,
+  "pk_negative_max": 1,
 
-    "##glue_negative_prob": "给别人打胶破坏对方牛子的几率 [0, 1]",
-    "glue_negative_prob": 0.3,
+  "##glue_negative_prob": "给别人打胶破坏对方牛子的几率 [0, 1]",
+  "glue_negative_prob": 0.3,
 
-    "##glue_negative": "给别人打胶失败的话，对方牛子减小的范围",
-    "glue_negative_min": 0.1,
-    "glue_negative_max": 1,
+  "##glue_negative": "给别人打胶失败的话，对方牛子减小的范围",
+  "glue_negative_min": 0.1,
+  "glue_negative_max": 1,
 
-    "##lock_me_negative_prob_with_strong_person": "满足🔒自己的长度后，回报高，但有概率失败得到大额惩罚",
-    "lock_me_negative_prob_with_strong_person": 0.2,
-    "lock_me_negative_with_strong_person_min": 2,
-    "lock_me_negative_with_strong_person_max": 5,
+  "##lock_me_negative_prob_with_strong_person": "满足🔒自己的长度后，回报高，但有概率失败得到大额惩罚",
+  "lock_me_negative_prob_with_strong_person": 0.2,
+  "lock_me_negative_with_strong_person_min": 2,
+  "lock_me_negative_with_strong_person_max": 5,
 
-    "##pk_guard_chinchin_length": "禁止对弱者一直pk刷长度，低于该长度的人会开启pk保护",
-    "pk_guard_chinchin_length": 5,
+  "##pk_guard_chinchin_length": "禁止对弱者一直pk刷长度，低于该长度的人会开启pk保护",
+  "pk_guard_chinchin_length": 5,
 
-    "##ranking_list_length": "排行榜展示多少人",
-    "ranking_list_length": 8
+  "##ranking_list_length": "排行榜展示多少人",
+  "ranking_list_length": 8,
+
+  "##rebirth": "转生配置",
+  "rebirth": {
+    "levels": [
+      {
+        "##level": "转生等级，不要改已有level的值，这是唯一id，改了会破坏数据库",
+        "level": 1,
+
+        "##name": "转生等级显示的文本",
+        "name": "1转牛豪",
+
+        "##cost_length": "本次转生需要的长度，1转要200，2转要500（花费200+300），以此类推",
+        "cost_length": 200,
+
+        "##weight": "转生后的打胶、pk等操作的加权系数",
+        "weight": 1.5,
+
+        "##fail_prob": "转生失败的概率 [0, 1]",
+        "fail_prob": 0.2,
+
+        "##fail_negative": "转生失败的惩罚范围",
+        "fail_negative_min": 10,
+        "fail_negative_max": 30
+      },
+      {
+        "level": 2,
+        "name": "2转牛皇",
+        "cost_length": 300,
+        "weight": 2,
+        "fail_prob": 0.4,
+        "fail_negative_min": 20,
+        "fail_negative_max": 60
+      },
+      {
+        "level": 3,
+        "name": "3转牛尊",
+        "cost_length": 400,
+        "weight": 2.5,
+        "fail_prob": 0.8,
+        "fail_negative_min": 40,
+        "fail_negative_max": 120
+      },
+      {
+        "level": 4,
+        "name": "4转牛圣",
+        "cost_length": 500,
+        "weight": 3,
+        "fail_prob": 0.9,
+        "fail_negative_min": 80,
+        "fail_negative_max": 240
+      }
+    ]
+  },
+
+  "##badge": "成就配置",
+  "badge": {
+    "categories": [
+      {
+        "##id": "成就id，不要改已有id的值，这是唯一id，改了会破坏数据库",
+        "id": 1,
+
+        "name": "牛子掠夺者",
+        "description": "它说，可以上了",
+
+        "##priority": "成就优先级，数字越大，展示时越靠前",
+        "priority": 100,
+
+        "##condition": "成就达成条件",
+        "condition": {
+          "##": "以 ## 开头的字段不会被作为条件，可以算注释",
+          "##operator": "运算符说明：目前只支持配两种运算符，> 和 >= ，如 > 100，>= 100",
+          
+          "##glue_me_count": "给自己打胶次数",
+          "##glue_target_count": "给别人打胶次数",
+          "##glue_plus_count": "打胶成功次数",
+          "##glue_plus_length_total": "打胶总增加长度",
+          "##glue_punish_count": "打胶失败次数",
+          "##glue_punish_length_total": "打胶总减少长度",
+
+          "##pk_win_count": "pk成功次数",
+          "pk_win_count": ">=50",
+          "##pk_lose_count": "pk失败次数",
+          "##pk_plus_length_total": "pk总增加长度",
+          "pk_plus_length_total": ">=50",
+          "##pk_punish_length_total": "pk总减少长度",
+
+          "##lock_me_count": "锁自己次数",
+          "##lock_target_count": "锁别人次数",
+          "##lock_plus_count": "锁成功次数",
+          "##lock_punish_count": "锁失败次数",
+          "##lock_plus_length_total": "锁带来的总增加长度",
+          "##lock_punish_length_total": "锁带来的总减少长度"
+        },
+        "addition": {
+          "##operator": "运算符说明：支持两种加成条件，% 结尾的是加成比例，比如 10% ，100% ；数字的话就是固定值，比如 10, 20",
+
+          "##pk_weight": "pk时的加成，代表原值的 110% + 1cm 固定值",
+          "pk_weight": ["10%", 1],
+
+          "##lock_weight": "锁时的加成",
+          "##glue_weight": "打胶时的加成"
+        }
+      },
+      {
+        "id": 2,
+        "name": "打胶大师",
+        "description": "精湛的打胶要有仪式感",
+        "priority": 90,
+        "condition": {
+          "glue_plus_count": ">=50",
+          "glue_plus_length_total": ">=100"
+        },
+        "addition": {
+          "glue_weight": ["10%", 1]
+        }
+      }
+    ]
+  }
 }

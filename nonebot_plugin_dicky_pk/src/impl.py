@@ -19,7 +19,6 @@ def send_message(qq: int, group: int, message: str):
 
 
 import asyncio
-from nonebot.matcher import Matcher
 from nonebot.adapters.onebot.v11 import (
     Bot,
     Message,
@@ -27,17 +26,16 @@ from nonebot.adapters.onebot.v11 import (
 )
 
 def get_at_segment(uid: int):
-    return f'{MessageSegment.at(uid)}'
+    return ''
 
 
 def send_message(
     bot: Bot,
-    matcher: Matcher,
     qq: int,
     group: int,
     message: str
 ):
     loop = asyncio.get_running_loop()
-    loop.create_task(bot.send_group_msg(group_id=group, message=Message(message)))
-    # matcher.stop_propagation()
+    loop.create_task(bot.send_group_msg(group_id=group, message=MessageSegment.at(qq)+f'\n{message}'))
     return
+
