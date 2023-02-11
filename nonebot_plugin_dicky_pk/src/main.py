@@ -9,6 +9,7 @@ from .constants import OpFrom
 from typing import Optional
 from nonebot.adapters.onebot.v11 import Bot
 
+
 KEYWORDS = {
     'chinchin': ['牛子'],
     'pk': ['pk'],
@@ -39,11 +40,11 @@ def message_processor(
     """
         main entry
         TODO: 破解牛子：被破解的 牛子 长度操作 x 100 倍
+        TODO：疯狂牛子星期四，牛子长度操作加倍
         TODO: 不同群不同的配置参数
-        TODO: 成就系统
         TODO: 转生级别不同不能较量
         TODO: 牛子最小排行
-        TODO: 牛子成就
+        TODO：牛子成就额外的提示语
     """
     # lazy init database
     lazy_init_database()
@@ -90,9 +91,18 @@ def message_processor(
     # 记录数据 - badge
     DB.sub_db_badge.init_user_data(qq)
 
+    # flow context
+    ctx = {
+        'bot': bot,
+        'qq': qq,
+        'at_qq': at_qq,
+        'group': group,
+        'msg_ctx': msg_ctx,
+    }
+
     # 注册牛子
     if match_func(KEYWORDS.get('sign_up'), message):
-        return Chinchin_me.sign_up(bot, qq, group)
+        return Chinchin_me.sign_up(ctx)
 
     # 下面的逻辑必须有牛子
     if not DB.is_registered(qq):
@@ -109,20 +119,20 @@ def message_processor(
 
     # 牛子排名
     if match_func(KEYWORDS.get('ranking'), message):
-        return Chinchin_info.entry_ranking(bot, qq, group)
+        return Chinchin_info.entry_ranking(ctx)
 
     # 牛子转生
     if match_func(KEYWORDS.get('rebirth'), message):
-        return Chinchin_upgrade.entry_rebirth(bot, qq, group)
+        return Chinchin_upgrade.entry_rebirth(ctx)
 
     # 牛子成就
     if match_func(KEYWORDS.get('badge'), message):
-        return Chinchin_badge.entry_badge(bot, qq, group)
+        return Chinchin_badge.entry_badge(ctx)
 
     # 查询牛子信息
     # FIXME: 注意因为是模糊匹配，所以 “牛子” 的命令要放到所有 "牛子xxx" 命令的最后
     if match_func(KEYWORDS.get('chinchin'), message):
-        return Chinchin_info.entry_chinchin(bot, qq, group)
+        return Chinchin_info.entry_chinchin(ctx)
 
     # 对别人的
     if at_qq:
@@ -135,27 +145,27 @@ def message_processor(
 
         # pk别人
         if match_func(KEYWORDS.get('pk'), message):
-            return Chinchin_with_target.entry_pk_with_target(bot, qq, group, at_qq)
+            return Chinchin_with_target.entry_pk_with_target(ctx)
 
         # 🔒别人
         if match_func(KEYWORDS.get('lock'), message):
-            return Chinchin_with_target.entry_lock_with_target(bot, qq, group, at_qq)
+            return Chinchin_with_target.entry_lock_with_target(ctx)
 
         # 打胶别人
         if match_func(KEYWORDS.get('glue'), message):
-            return Chinchin_with_target.entry_glue_with_target(bot, qq, group, at_qq)
+            return Chinchin_with_target.entry_glue_with_target(ctx)
 
         # 看别人的牛子
         if match_func(KEYWORDS.get('see_chinchin'), message):
-            return Chinchin_info.entry_see_chinchin(bot, qq, group, at_qq)
+            return Chinchin_info.entry_see_chinchin(ctx)
     else:
         # 🔒自己
         if match_func(KEYWORDS.get('lock_me'), message):
-            return Chinchin_me.entry_lock_me(bot, qq, group)
+            return Chinchin_me.entry_lock_me(ctx)
 
         # 自己打胶
         if match_func(KEYWORDS.get('glue'), message):
-            return Chinchin_me.entry_glue(bot, qq, group)
+            return Chinchin_me.entry_glue(ctx)
 
 
 class Chinchin_intercepor():
@@ -205,7 +215,14 @@ class Chinchin_view():
 class Chinchin_info():
 
     @staticmethod
-    def entry_ranking(bot: Bot, qq: int, group: int):
+    def entry_ranking(ctx: dict):
+        bot = ctx['bot']
+        qq = ctx['qq']
+        group = ctx['group']
+        msg_ctx = ctx['msg_ctx']
+        # remove before `at` msg
+        if len(msg_ctx['before']) > 0:
+            del msg_ctx['before'][0]
         top_users = DB.get_top_users()
         message_arr = [
             '【牛子宇宙最长大牛子】',
@@ -236,13 +253,20 @@ class Chinchin_info():
         send_message(bot, qq, group, join(message_arr, '\n'))
 
     @staticmethod
-    def entry_chinchin(bot: Bot, qq: int, group: int):
+    def entry_chinchin(ctx: dict):
+        bot = ctx['bot']
+        qq = ctx['qq']
+        group = ctx['group']
         user_chinchin_info = ChinchinInternal.internal_get_chinchin_info(
             qq)
         send_message(bot, qq, group, join(user_chinchin_info, '\n'))
 
     @staticmethod
-    def entry_see_chinchin(bot: Bot, qq: int, group: int, at_qq: int):
+    def entry_see_chinchin(ctx: dict):
+        bot = ctx['bot']
+        qq = ctx['qq']
+        group = ctx['group']
+        at_qq = ctx['at_qq']
         target_chinchin_info = ChinchinInternal.internal_get_chinchin_info(
             at_qq)
         msg_text = join(target_chinchin_info, '\n')
@@ -329,7 +353,10 @@ class ChinchinInternal():
 class Chinchin_me():
 
     @staticmethod
-    def entry_lock_me(bot: Bot, qq: int, group: int):
+    def entry_lock_me(ctx: dict):
+        bot = ctx['bot']
+        qq = ctx['qq']
+        group = ctx['group']
         # check limited
         is_today_limited = DB.is_lock_daily_limited(qq)
         if is_today_limited:
@@ -397,12 +424,15 @@ class Chinchin_me():
                 DB.sub_db_badge.record_lock_plus_length_total(qq, plus_value)
                 # TODO: 🔒自己效果有加成
                 message_arr = [
-                    '🔒的很卖力很舒服，你的牛子增加了{}厘米'.format(plus_value)
+                    '自己把自己搞舒服了，牛子涨了{}厘米'.format(plus_value)
                 ]
                 send_message(bot, qq, group, join(message_arr, '\n'))
 
     @staticmethod
-    def entry_glue(bot: Bot, qq: int, group: int):
+    def entry_glue(ctx: dict):
+        bot = ctx['bot']
+        qq = ctx['qq']
+        group = ctx['group']
         # check limited
         is_today_limited = DB.is_glue_daily_limited(qq)
         if is_today_limited:
@@ -453,7 +483,10 @@ class Chinchin_me():
             send_message(bot, qq, group, join(message_arr, '\n'))
 
     @staticmethod
-    def sign_up(bot: Bot, qq: int, group: int):
+    def sign_up(ctx: dict):
+        bot = ctx['bot']
+        qq = ctx['qq']
+        group = ctx['group']
         if DB.is_registered(qq):
             message_arr = [
                 '你已经有牛子了！'
@@ -491,7 +524,11 @@ class Chinchin_me():
 class Chinchin_with_target():
 
     @staticmethod
-    def entry_pk_with_target(bot: Bot, qq: int, group: int, at_qq: int):
+    def entry_pk_with_target(ctx: dict):
+        bot = ctx['bot']
+        qq = ctx['qq']
+        group = ctx['group']
+        at_qq = ctx['at_qq']
         # 不能 pk 自己
         if qq == at_qq:
             message_arr = [
@@ -577,10 +614,14 @@ class Chinchin_with_target():
             send_message(bot, qq, group, join(message_arr, '\n'))
 
     @staticmethod
-    def entry_lock_with_target(bot: Bot, qq: int, group: int, at_qq: int):
+    def entry_lock_with_target(ctx: dict):
+        bot = ctx['bot']
+        qq = ctx['qq']
+        group = ctx['group']
+        at_qq = ctx['at_qq']
         # 🔒 自己是单独的逻辑
         if qq == at_qq:
-            Chinchin_me.entry_lock_me(bot, qq, group)
+            Chinchin_me.entry_lock_me(ctx)
             return
         # TODO：🔒别人可能失败
         # check limited
@@ -619,10 +660,14 @@ class Chinchin_with_target():
         send_message(bot, qq, group, join(message_arr, '\n'))
 
     @staticmethod
-    def entry_glue_with_target(bot: Bot, qq: int, group: int, at_qq: int):
+    def entry_glue_with_target(ctx: dict):
+        bot = ctx['bot']
+        qq = ctx['qq']
+        group = ctx['group']
+        at_qq = ctx['at_qq']
         # 打胶自己跳转
         if qq == at_qq:
-            Chinchin_me.entry_glue(bot, qq, group)
+            Chinchin_me.entry_glue(ctx)
             return
         # check limited
         is_today_limited = DB.is_glue_daily_limited(qq)
@@ -682,7 +727,10 @@ class Chinchin_with_target():
 class Chinchin_upgrade():
 
     @staticmethod
-    def entry_rebirth(bot: Bot, qq: int, group: int):
+    def entry_rebirth(ctx: dict):
+        bot = ctx['bot']
+        qq = ctx['qq']
+        group = ctx['group']
         # TODO: 满转人士提示，不能再转了
         info = RebirthSystem.get_rebirth_info(qq)
         if info['can_rebirth'] is False:
@@ -725,7 +773,10 @@ class Chinchin_upgrade():
 class Chinchin_badge():
 
     @staticmethod
-    def entry_badge(bot: Bot, qq: int, group: int):
+    def entry_badge(ctx: dict):
+        bot = ctx['bot']
+        qq = ctx['qq']
+        group = ctx['group']
         badge_view = BadgeSystem.get_badge_view(qq)
         message_arr = []
         if badge_view is None:
