@@ -106,6 +106,8 @@ class BadgeSystem():
     @classmethod
     def get_badge_by_qq(cls, qq: int):
         badge_data = DB.sub_db_badge.get_badge_data(qq)
+        if not badge_data:
+            return None
         return cls.parse_badge_ids(badge_data)
 
     @classmethod
@@ -147,8 +149,10 @@ class BadgeSystem():
 
     @classmethod
     def check_whether_get_new_badge(cls, qq: int):
-        configs = cls.get_badge_configs()
         user_badge_data = DB.sub_db_badge.get_badge_data(qq)
+        if not user_badge_data:
+            return None
+        configs = cls.get_badge_configs()
         badges = list(configs.values())
         will_get_badges = []
         for badge in badges:

@@ -45,6 +45,10 @@ def message_processor(
         TODO: 转生级别不同不能较量
         TODO: 牛子最小排行
         TODO：牛子成就额外的提示语
+
+        高优：
+        TODO: 牛子 pk 优化，不再是 55 开胜率
+        TODO：所有 random 用更好的随机算法
     """
     # lazy init database
     lazy_init_database()
