@@ -482,7 +482,7 @@ class Chinchin_me():
             # record record_glue_plus_length_total to qq
             DB.sub_db_badge.record_glue_plus_length_total(qq, plus_value)
             message_arr = [
-                '牛子对你的付出很满意吗，增加{}厘米'.format(plus_value)
+                '牛子对你的付出很满意嘛，增加{}厘米'.format(plus_value)
             ]
             send_message(bot, qq, group, join(message_arr, '\n'))
 
