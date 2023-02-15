@@ -7,19 +7,19 @@
   "lock_me_chinchin_min": 20,
 
   "##lock_daily_max": "每天🔒的上限次数，包括🔒自己和别人",
-  "lock_daily_max": 6,
+  "lock_daily_max": 36,
   "##cd_trigger_lock": "一旦🔒过了 rate ( [0, 1] ) 百分比的数量，之后每次🔒就需要等 time 分钟的 cd",
   "cd_trigger_lock_time": 60,
   "cd_trigger_lock_rate": 0.5,
 
   "##pk_daily_max": "每天pk的上限次数，包括pk自己和别人",
-  "pk_daily_max": 6,
+  "pk_daily_max": 36,
   "##cd_trigger_pk": "一旦pk过了 rate ( [0, 1] ) 百分比的数量，之后每次pk就需要等 time 分钟的 cd",
   "cd_trigger_pk_time": 60,
   "cd_trigger_pk_rate": 0.5,
 
   "##glue_daily": "每天打胶的上限次数，包括打胶自己和别人",
-  "glue_daily_max": 6,
+  "glue_daily_max": 36,
   "##cd_trigger_glue": "一旦打胶过了 rate ( [0, 1] ) 百分比的数量，之后每次打胶就需要等 time 分钟的 cd",
   "cd_trigger_glue_time": 60,
   "cd_trigger_glue_rate": 0.5,
@@ -44,8 +44,15 @@
   "glue_self_negative_min": 0.1,
   "glue_self_negative_max": 0.5,
 
-  "##pk_unstable_range": "pk两者牛子相差该值时，pk胜负不稳定，会55开随机决定胜负",
-  "pk_unstable_range": 5,
+  "##pk_unstable_range": "（已废弃）pk两者牛子相差该值时，pk胜负不稳定，会55开随机决定胜负",
+  "##pk_unstable_range_deprecated": "旧版逻辑不友好，新版改用 pk_unstable_range_v2 和 pk_unstable_range_v2_edge",
+  "_pk_unstable_range": 5,
+
+  "##pk_unstable_range_v2": "取值范围 [0, ∞) ，pk时，没有绝对实力差距的范围",
+  "##pk_unstable_range_v2_example": "可以设定为 0.1, 1, 1.1 等(1.1 是 110%)，比如 1 时，50cm 允许挑战 100cm 以内的，两者差的越多，越难赢，挑战 100cm+ 的存在绝对实力差距，无法获胜",
+  "pk_unstable_range_v2": 1,
+  "##pk_unstable_range_v2_edge": "取值范围 [0, 1] ，pk没有绝对实力差距时，胜率的边缘情况，不能低于 10% ，不能高于 90%",
+  "pk_unstable_range_v2_edge": [0.1, 0.9],
 
   "##pk_plus": "pk胜利后增加长度的范围",
   "pk_plus_min": 0.5,

@@ -1,4 +1,6 @@
 import arrow
+import random
+import secrets
 
 
 def arrow_now():
@@ -85,3 +87,35 @@ def is_number(s: str):
         return True
     except (TypeError, ValueError):
         pass
+
+
+class Random():
+
+    nums = []
+    max_nums = 500
+
+    @staticmethod
+    def get_secure_random_number():
+        cryptogen = random.SystemRandom()
+        return cryptogen.random()
+
+    @staticmethod
+    def generate_secure_random_number():
+        return secrets.randbits(256) / ((1 << 256) - 1)
+
+    @classmethod
+    def get_single_random(cls):
+        # num_1 = cls.generate_secure_random_number()
+        num_2 = cls.generate_secure_random_number()
+        return num_2
+
+    @classmethod
+    def fill(cls):
+        while len(cls.nums) < cls.max_nums:
+            cls.nums.append(cls.get_single_random())
+
+    @classmethod
+    def random(cls):
+        if len(cls.nums) == 0:
+            cls.fill()
+        return cls.nums.pop()

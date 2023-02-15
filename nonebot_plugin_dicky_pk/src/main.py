@@ -45,10 +45,6 @@ def message_processor(
         TODO: 转生级别不同不能较量
         TODO: 牛子最小排行
         TODO：牛子成就额外的提示语
-
-        高优：
-        TODO: 牛子 pk 优化，不再是 55 开胜率
-        TODO：所有 random 用更好的随机算法
     """
     # lazy init database
     lazy_init_database()
@@ -110,8 +106,13 @@ def message_processor(
 
     # 下面的逻辑必须有牛子
     if not DB.is_registered(qq):
+        not_has_chinchin_msg = None
+        if at_qq:
+            not_has_chinchin_msg = '对方因为你没有牛子拒绝了你，快去注册一只牛子吧！'
+        else:
+            not_has_chinchin_msg = '你还没有牛子！'
         message_arr = [
-            '你还没有牛子！'
+            not_has_chinchin_msg,
         ]
         send_message(bot, qq, group, join(message_arr, '\n'))
         return
@@ -568,17 +569,16 @@ class Chinchin_with_target():
         user_data = DB.load_data(qq)
         target_length = target_data.get('length')
         user_length = user_data.get('length')
-        offset = user_length - target_length
-        offset_abs = abs(offset)
-        is_user_win = False
-        if offset_abs < Config.get_config('pk_unstable_range'):
-            is_user_win = Config.is_pk_win()
-        else:
-            is_user_win = (offset > 0)
+        is_user_win = Config.is_pk_win(user_length, target_length)
         DB.record_time(qq, 'pk_time')
         DB.record_time(at_qq, 'pked_time')
         DB.count_pk_daily(qq)
         if is_user_win:
+            is_giant_kill = user_length < target_length
+            if is_giant_kill:
+                pk_message = 'pk成功了，对面本以为自己牛子是最棒的，但没想到被你拿下，你的才是最棒的'
+            else:
+                pk_message = 'pk成功了，对面牛子不值一提，你的是最棒的'
             user_plus_value = Chinchin_intercepor.length_operate(
                 qq, Config.get_pk_plus_value(),
                 source=OpFrom.PK_WIN
@@ -596,8 +596,7 @@ class Chinchin_with_target():
             # record record_pk_plus_length_total to qq
             DB.sub_db_badge.record_pk_plus_length_total(qq, user_plus_value)
             message_arr = [
-                'pk成功了，对面牛子不值一提，你的是最棒的，牛子获得自信增加了{}厘米，对面牛子减小了{}厘米'.format(
-                    user_plus_value, target_punish_value)
+                f'{pk_message}，牛子获得自信增加了{user_plus_value}厘米，对面牛子减小了{target_punish_value}厘米'
             ]
             send_message(bot, qq, group, join(message_arr, '\n'))
         else:
