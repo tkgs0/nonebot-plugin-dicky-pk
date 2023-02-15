@@ -51,7 +51,7 @@ def dicky_run(msg: str, bot: Bot, event: GroupMessageEvent):
     uid = event.user_id
     gid = event.group_id
     uids = [at.data['qq'] for at in event.get_message()['at']]
-    at_id = uids[0] if uids else None
+    at_id = int(uids[0]) if uids else None
     nickname = event.sender.card if event.sender.card else event.sender.nickname
     fuzzy_match = True
     chinchin(bot, msg, uid, gid, at_id, nickname, fuzzy_match)
