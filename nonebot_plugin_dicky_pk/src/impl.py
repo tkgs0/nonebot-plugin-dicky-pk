@@ -21,21 +21,21 @@ def send_message(qq: int, group: int, message: str):
 import asyncio
 from nonebot.adapters.onebot.v11 import (
     Bot,
-    Message,
     MessageSegment,
 )
+
 
 def get_at_segment(uid: int):
     return ''
 
 
-def send_message(
-    bot: Bot,
-    qq: int,
-    group: int,
-    message: str
-):
+def send_message( bot: Bot, qq: int, group: int, message: str):
     loop = asyncio.get_running_loop()
-    loop.create_task(bot.send_group_msg(group_id=group, message=MessageSegment.at(qq)+f'\n{message}'))
+    loop.create_task(
+        bot.send_group_msg(
+            group_id=group,
+            message=MessageSegment.at(qq)+f'\n{message}'
+        )
+    )
     return
 
