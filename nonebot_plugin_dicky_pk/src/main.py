@@ -8,8 +8,6 @@ from .badge import BadgeSystem
 from .constants import OpFrom, TimeConst, FarmConst
 from .farm import FarmSystem
 from typing import Optional
-from nonebot.adapters.onebot.v11 import Bot
-
 
 KEYWORDS = {
     "chinchin": ["牛子"],
@@ -31,7 +29,6 @@ DEFAULT_NONE_TIME = TimeConst.DEFAULT_NONE_TIME
 
 
 def message_processor(
-    bot: Bot,
     message: str,
     qq: int,
     group: int,
@@ -71,7 +68,7 @@ def message_processor(
     # hack send message impl
 
     def create_send_message_hook(origin_send_message):
-        def send_message_hook(bot, qq, group, message):
+        def send_message_hook(qq, group, message):
             before = join(msg_ctx["before"], "\n")
             content = None
             after = join(msg_ctx["after"], "\n")
@@ -82,9 +79,7 @@ def message_processor(
             elif isinstance(message, list):
                 content = join(message, "\n")
             text = join([before, content, after], "\n")
-            origin_send_message(bot, qq, group, text)
-            msg_ctx["before"].clear()
-            msg_ctx["after"].clear()
+            origin_send_message(qq, group, text)
 
         return send_message_hook
 
@@ -109,7 +104,6 @@ def message_processor(
 
     # flow context
     ctx = {
-        "bot": bot,
         "qq": qq,
         "at_qq": at_qq,
         "group": group,
@@ -130,7 +124,7 @@ def message_processor(
         message_arr = [
             not_has_chinchin_msg,
         ]
-        send_message(bot, qq, group, join(message_arr, "\n"))
+        send_message(qq, group, join(message_arr, "\n"))
         return
 
     # >>> 检查阶段
@@ -145,7 +139,7 @@ def message_processor(
     def eager_return():
         # TODO ：急的次数太多获得 “急急国王” 成就
         message_arr = ["你的牛子还在闭关修炼中，无法进行其他操作，我知道你很急，但你先别急"]
-        return send_message(bot, qq, group, join(message_arr, "\n"))
+        return send_message(qq, group, join(message_arr, "\n"))
 
     # >>> 匹配阶段
     # 牛子仙境 (search)
@@ -184,7 +178,7 @@ def message_processor(
     if at_qq:
         if not DB.is_registered(at_qq):
             message_arr = ["对方还没有牛子！"]
-            send_message(bot, qq, group, join(message_arr, "\n"))
+            send_message(qq, group, join(message_arr, "\n"))
             return
 
         # pk别人
@@ -258,7 +252,6 @@ class Chinchin_view:
 class Chinchin_info:
     @staticmethod
     def entry_ranking(ctx: dict):
-        bot = ctx["bot"]
         qq = ctx["qq"]
         group = ctx["group"]
         msg_ctx = ctx["msg_ctx"]
@@ -294,26 +287,24 @@ class Chinchin_info:
                 need_level_label=True,
             )
             message_arr.append(f"{idx}. {prefix}{nickname} 长度：{length_label}")
-        send_message(bot, qq, group, join(message_arr, "\n"))
+        send_message(qq, group, join(message_arr, "\n"))
 
     @staticmethod
     def entry_chinchin(ctx: dict):
-        bot = ctx["bot"]
         qq = ctx["qq"]
         group = ctx["group"]
         user_chinchin_info = ChinchinInternal.internal_get_chinchin_info(qq)
-        send_message(bot, qq, group, join(user_chinchin_info, "\n"))
+        send_message(qq, group, join(user_chinchin_info, "\n"))
 
     @staticmethod
     def entry_see_chinchin(ctx: dict):
-        bot = ctx["bot"]
         qq = ctx["qq"]
         group = ctx["group"]
         at_qq = ctx["at_qq"]
         target_chinchin_info = ChinchinInternal.internal_get_chinchin_info(at_qq)
         msg_text = join(target_chinchin_info, "\n")
         msg_text = msg_text.replace("【牛子信息】", "【对方牛子信息】")
-        send_message(bot, qq, group, msg_text)
+        send_message(qq, group, msg_text)
 
 
 class ChinchinInternal:
@@ -376,20 +367,19 @@ class ChinchinInternal:
 class Chinchin_me:
     @staticmethod
     def entry_lock_me(ctx: dict):
-        bot = ctx["bot"]
         qq = ctx["qq"]
         group = ctx["group"]
         # check limited
         is_today_limited = DB.is_lock_daily_limited(qq)
         if is_today_limited:
             message_arr = ["你的牛子今天太累了，改天再来吧！"]
-            send_message(bot, qq, group, join(message_arr, "\n"))
+            send_message(qq, group, join(message_arr, "\n"))
             return
         # check cd
         is_in_cd = CD_Check.is_lock_in_cd(qq)
         if is_in_cd:
             message_arr = ["歇一会吧，嘴都麻了！"]
-            send_message(bot, qq, group, join(message_arr, "\n"))
+            send_message(qq, group, join(message_arr, "\n"))
             return
         lock_me_min = Config.get_config("lock_me_chinchin_min")
         user_data = DB.load_data(qq)
@@ -402,10 +392,10 @@ class Chinchin_me:
                 # not need weighting
                 DB.length_decrease(qq, punish_value)
                 message_arr = ["你的牛子还不够长，你🔒不着，牛子自尊心受到了伤害，缩短了{}厘米".format(punish_value)]
-                send_message(bot, qq, group, join(message_arr, "\n"))
+                send_message(qq, group, join(message_arr, "\n"))
             else:
                 message_arr = ["你的牛子太小了，还🔒不到"]
-                send_message(bot, qq, group, join(message_arr, "\n"))
+                send_message(qq, group, join(message_arr, "\n"))
         else:
             # record record_lock_me_count to qq
             DB.sub_db_badge.record_lock_me_count(qq)
@@ -420,7 +410,7 @@ class Chinchin_me:
                 # record record_lock_punish_length_total to qq
                 DB.sub_db_badge.record_lock_punish_length_total(qq, punish_value)
                 message_arr = ["你的牛子太长了，没🔒住爆炸了，缩短了{}厘米".format(punish_value)]
-                send_message(bot, qq, group, join(message_arr, "\n"))
+                send_message(qq, group, join(message_arr, "\n"))
             else:
                 plus_value = Chinchin_intercepor.length_operate(
                     qq, Config.get_lock_plus_value(), source=OpFrom.LOCK_ME
@@ -433,24 +423,23 @@ class Chinchin_me:
                 DB.sub_db_badge.record_lock_plus_length_total(qq, plus_value)
                 # TODO: 🔒自己效果有加成
                 message_arr = ["自己把自己搞舒服了，牛子涨了{}厘米".format(plus_value)]
-                send_message(bot, qq, group, join(message_arr, "\n"))
+                send_message(qq, group, join(message_arr, "\n"))
 
     @staticmethod
     def entry_glue(ctx: dict):
-        bot = ctx["bot"]
         qq = ctx["qq"]
         group = ctx["group"]
         # check limited
         is_today_limited = DB.is_glue_daily_limited(qq)
         if is_today_limited:
             message_arr = ["牛子快被你冲炸了，改天再来冲吧！"]
-            send_message(bot, qq, group, join(message_arr, "\n"))
+            send_message(qq, group, join(message_arr, "\n"))
             return
         # check cd
         is_in_cd = CD_Check.is_glue_in_cd(qq)
         if is_in_cd:
             message_arr = ["你刚打了一胶，歇一会吧！"]
-            send_message(bot, qq, group, join(message_arr, "\n"))
+            send_message(qq, group, join(message_arr, "\n"))
             return
         DB.record_time(qq, "glueing_time")
         DB.count_glue_daily(qq)
@@ -466,7 +455,7 @@ class Chinchin_me:
             # record record_glue_punish_length_total to qq
             DB.sub_db_badge.record_glue_punish_length_total(qq, punish_value)
             message_arr = ["打胶结束，牛子快被冲爆炸了，减小{}厘米".format(punish_value)]
-            send_message(bot, qq, group, join(message_arr, "\n"))
+            send_message(qq, group, join(message_arr, "\n"))
         else:
             plus_value = Chinchin_intercepor.length_operate(
                 qq, Config.get_glue_plus_value(), source=OpFrom.GLUE_ME
@@ -478,16 +467,15 @@ class Chinchin_me:
             # record record_glue_plus_length_total to qq
             DB.sub_db_badge.record_glue_plus_length_total(qq, plus_value)
             message_arr = ["牛子对你的付出很满意吗，增加{}厘米".format(plus_value)]
-            send_message(bot, qq, group, join(message_arr, "\n"))
+            send_message(qq, group, join(message_arr, "\n"))
 
     @staticmethod
     def sign_up(ctx: dict):
-        bot = ctx["bot"]
         qq = ctx["qq"]
         group = ctx["group"]
         if DB.is_registered(qq):
             message_arr = ["你已经有牛子了！"]
-            send_message(bot, qq, group, join(message_arr, "\n"))
+            send_message(qq, group, join(message_arr, "\n"))
             return
         # 注册
         new_length = Config.new_chinchin_length()
@@ -514,38 +502,37 @@ class Chinchin_me:
                 fixed_two_decimal_digits(new_length),
             )
         ]
-        send_message(bot, qq, group, join(message_arr, "\n"))
+        send_message(qq, group, join(message_arr, "\n"))
 
 
 class Chinchin_with_target:
     @staticmethod
     def entry_pk_with_target(ctx: dict):
-        bot = ctx["bot"]
         qq = ctx["qq"]
         group = ctx["group"]
         at_qq = ctx["at_qq"]
         # 不能 pk 自己
         if qq == at_qq:
             message_arr = ["你不能和自己的牛子进行较量！"]
-            send_message(bot, qq, group, join(message_arr, "\n"))
+            send_message(qq, group, join(message_arr, "\n"))
             return
         # check limited
         is_today_limited = DB.is_pk_daily_limited(qq)
         if is_today_limited:
             message_arr = ["战斗太多次牛子要虚脱了，改天再来吧！"]
-            send_message(bot, qq, group, join(message_arr, "\n"))
+            send_message(qq, group, join(message_arr, "\n"))
             return
         # check cd
         is_in_cd = CD_Check.is_pk_in_cd(qq)
         if is_in_cd:
             message_arr = ["牛子刚结束战斗，歇一会吧！"]
-            send_message(bot, qq, group, join(message_arr, "\n"))
+            send_message(qq, group, join(message_arr, "\n"))
             return
         # pk 保护机制：禁止刷分
         is_target_protected = DB.is_pk_protected(at_qq)
         if is_target_protected:
             message_arr = ["对方快没有牛子了，行行好吧！"]
-            send_message(bot, qq, group, join(message_arr, "\n"))
+            send_message(qq, group, join(message_arr, "\n"))
             return
         target_data = DB.load_data(at_qq)
         user_data = DB.load_data(qq)
@@ -578,7 +565,7 @@ class Chinchin_with_target:
             message_arr = [
                 f"{pk_message}，牛子获得自信增加了{user_plus_value}厘米，对面牛子减小了{target_punish_value}厘米"
             ]
-            send_message(bot, qq, group, join(message_arr, "\n"))
+            send_message(qq, group, join(message_arr, "\n"))
         else:
             user_punish_value = Config.get_pk_punish_value()
             target_plus_value = Config.get_pk_plus_value()
@@ -594,11 +581,10 @@ class Chinchin_with_target:
                     user_punish_value, target_plus_value
                 )
             ]
-            send_message(bot, qq, group, join(message_arr, "\n"))
+            send_message(qq, group, join(message_arr, "\n"))
 
     @staticmethod
     def entry_lock_with_target(ctx: dict):
-        bot = ctx["bot"]
         qq = ctx["qq"]
         group = ctx["group"]
         at_qq = ctx["at_qq"]
@@ -611,13 +597,13 @@ class Chinchin_with_target:
         is_today_limited = DB.is_lock_daily_limited(qq)
         if is_today_limited:
             message_arr = ["别🔒了，要口腔溃疡了，改天再🔒吧！"]
-            send_message(bot, qq, group, join(message_arr, "\n"))
+            send_message(qq, group, join(message_arr, "\n"))
             return
         # check cd
         is_in_cd = CD_Check.is_lock_in_cd(qq)
         if is_in_cd:
             message_arr = ["歇一会吧，嘴都麻了！"]
-            send_message(bot, qq, group, join(message_arr, "\n"))
+            send_message(qq, group, join(message_arr, "\n"))
             return
         target_plus_value = Chinchin_intercepor.length_operate(
             qq, Config.get_lock_plus_value(), source=OpFrom.LOCK_WITH_TARGET
@@ -633,11 +619,10 @@ class Chinchin_with_target:
         # record record_lock_plus_length_total to qq
         DB.sub_db_badge.record_lock_plus_length_total(qq, target_plus_value)
         message_arr = ["🔒的很卖力很舒服，对方牛子增加了{}厘米".format(target_plus_value)]
-        send_message(bot, qq, group, join(message_arr, "\n"))
+        send_message(qq, group, join(message_arr, "\n"))
 
     @staticmethod
     def entry_glue_with_target(ctx: dict):
-        bot = ctx["bot"]
         qq = ctx["qq"]
         group = ctx["group"]
         at_qq = ctx["at_qq"]
@@ -649,13 +634,13 @@ class Chinchin_with_target:
         is_today_limited = DB.is_glue_daily_limited(qq)
         if is_today_limited:
             message_arr = ["你今天帮太多人打胶了，改天再来吧！ "]
-            send_message(bot, qq, group, join(message_arr, "\n"))
+            send_message(qq, group, join(message_arr, "\n"))
             return
         # check cd
         is_in_cd = CD_Check.is_glue_in_cd(qq)
         if is_in_cd:
             message_arr = ["你刚打了一胶，歇一会吧！"]
-            send_message(bot, qq, group, join(message_arr, "\n"))
+            send_message(qq, group, join(message_arr, "\n"))
             return
         DB.record_time(at_qq, "glued_time")
         DB.count_glue_daily(qq)
@@ -673,7 +658,7 @@ class Chinchin_with_target:
             # record record_glue_punish_length_total to qq
             DB.sub_db_badge.record_glue_punish_length_total(qq, target_punish_value)
             message_arr = ["对方牛子快被大家冲坏了，减小{}厘米".format(target_punish_value)]
-            send_message(bot, qq, group, join(message_arr, "\n"))
+            send_message(qq, group, join(message_arr, "\n"))
         else:
             target_plus_value = Chinchin_intercepor.length_operate(
                 qq, Config.get_glue_plus_value(), source=OpFrom.GLUE_WITH_TARGET
@@ -685,20 +670,19 @@ class Chinchin_with_target:
             # record record_glue_plus_length_total to at_qq
             DB.sub_db_badge.record_glue_plus_length_total(qq, target_plus_value)
             message_arr = ["你的打胶让对方牛子感到很舒服，对方牛子增加{}厘米".format(target_plus_value)]
-            send_message(bot, qq, group, join(message_arr, "\n"))
+            send_message(qq, group, join(message_arr, "\n"))
 
 
 class Chinchin_upgrade:
     @staticmethod
     def entry_rebirth(ctx: dict):
-        bot = ctx["bot"]
         qq = ctx["qq"]
         group = ctx["group"]
         # TODO: 满转人士提示，不能再转了
         info = RebirthSystem.get_rebirth_info(qq)
         if info["can_rebirth"] is False:
             message_arr = ["你和牛子四目相对，牛子摇了摇头，说下次一定！"]
-            send_message(bot, qq, group, join(message_arr, "\n"))
+            send_message(qq, group, join(message_arr, "\n"))
             return
         # rebirth
         is_rebirth_fail = info["failed_info"]["is_failed"]
@@ -707,7 +691,7 @@ class Chinchin_upgrade:
             punish_length = info["failed_info"]["failed_punish_length"]
             DB.length_decrease(qq, punish_length)
             message_arr = ["细数牛界之中，贸然渡劫者九牛一生，牛子失去荔枝爆炸了，减小{}厘米".format(punish_length)]
-            send_message(bot, qq, group, join(message_arr, "\n"))
+            send_message(qq, group, join(message_arr, "\n"))
             return
         # success
         is_first_rebirth = info["current_level_info"] is None
@@ -725,14 +709,13 @@ class Chinchin_upgrade:
                 info["next_level_info"]["name"]
             )
         ]
-        send_message(bot, qq, group, join(message_arr, "\n"))
+        send_message(qq, group, join(message_arr, "\n"))
         return
 
 
 class Chinchin_badge:
     @staticmethod
     def entry_badge(ctx: dict):
-        bot = ctx["bot"]
         qq = ctx["qq"]
         group = ctx["group"]
         badge_view = BadgeSystem.get_badge_view(qq)
@@ -741,41 +724,39 @@ class Chinchin_badge:
             message_arr.append("现在是幻想时间")
         else:
             message_arr.append(badge_view)
-        send_message(bot, qq, group, join(message_arr, "\n"))
+        send_message(qq, group, join(message_arr, "\n"))
 
 
 class Chinchin_farm:
     @staticmethod
     def entry_farm_info(ctx: dict):
-        bot = ctx["bot"]
         qq = ctx["qq"]
         group = ctx["group"]
         view = FarmSystem.get_farm_view(qq)
         message_arr = [view]
-        send_message(bot, qq, group, join(message_arr, "\n"))
+        send_message(qq, group, join(message_arr, "\n"))
 
     @staticmethod
     def entry_farm(ctx: dict):
-        bot = ctx["bot"]
         qq = ctx["qq"]
         group = ctx["group"]
         # 检查是否可玩
         is_current_can_play = FarmSystem.is_current_can_play()
         if not is_current_can_play:
             message_arr = ["牛子仙境大门紧闭，晚些时候再来吧！"]
-            send_message(bot, qq, group, join(message_arr, "\n"))
+            send_message(qq, group, join(message_arr, "\n"))
             return
         # 检查是否正在修炼
         is_current_planting = FarmSystem.is_current_planting(qq)
         if is_current_planting:
             message_arr = ["稍安勿躁，你的牛子正在秘密修练中！"]
-            send_message(bot, qq, group, join(message_arr, "\n"))
+            send_message(qq, group, join(message_arr, "\n"))
             return
         # 可玩的逻辑, start plant
         plant_info = FarmSystem.start_plant(qq)
         need_time_minutes = plant_info["need_time_minutes"]
         message_arr = [f"神只会在必要的时候展现他牛子的冰山一角，完成飞升预计需要{need_time_minutes}分钟"]
-        send_message(bot, qq, group, join(message_arr, "\n"))
+        send_message(qq, group, join(message_arr, "\n"))
 
     @staticmethod
     def check_planting_status(ctx):

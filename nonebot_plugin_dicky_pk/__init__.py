@@ -1,3 +1,4 @@
+import asyncio
 from pathlib import Path
 import ujson as json
 from nonebot import on_command
@@ -6,6 +7,7 @@ from nonebot.permission import SUPERUSER
 from nonebot.adapters.onebot.v11 import (
     Bot,
     Message,
+    MessageSegment,
     MessageEvent,
     GroupMessageEvent,
     GROUP_OWNER,
@@ -46,6 +48,13 @@ _help = [
 
 
 def dicky_run(msg: str, bot: Bot, event: GroupMessageEvent):
+
+    def get_at_segment(qq: int):
+        return f'{MessageSegment.at(qq)}'
+    def send_message(qq: int, group: int, message: str):
+        loop = asyncio.get_running_loop()
+        loop.create_task(bot.send_group_msg(group_id=group, message=message))
+
     if not enablelist['all']:
         return
     if not event.group_id in enablelist['group']:
@@ -56,7 +65,10 @@ def dicky_run(msg: str, bot: Bot, event: GroupMessageEvent):
     at_id = int(uids[0]) if uids else None
     nickname = event.sender.card if event.sender.card else event.sender.nickname
     fuzzy_match = True
-    chinchin(bot, msg, uid, gid, at_id, nickname, fuzzy_match)
+    chinchin(
+        msg, uid, gid, at_id, nickname, fuzzy_match,
+        get_at_segment, send_message
+    )
 
 
 get_chinchin = on_command(
