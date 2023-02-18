@@ -83,6 +83,7 @@ def message_processor(
                 content = join(message, "\n")
             text = join([before, content, after], "\n")
             origin_send_message(bot, qq, group, text)
+            msg_ctx["before"].clear()
 
         return send_message_hook
 
