@@ -157,7 +157,6 @@ async def _(bot: Bot, event: GroupMessageEvent):
 
 @on_command(
     '/牛友',
-    aliases={"/牛子好友", "/牛子朋友"},
     priority=15,
     block=True
 ).handle()
