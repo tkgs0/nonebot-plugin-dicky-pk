@@ -40,6 +40,9 @@ _help = [
     '/看他牛子(/看看牛子) @用户',
     '/注册牛子',
     '/牛子排名(/牛子排行)',
+    '/牛友(/牛子好友/牛子朋友)',
+    '/关注牛子(/添加牛友)',
+    '/取关牛子(/删除牛友)',
     '/牛子转生',
     '/牛子成就',
     '/牛子仙境',
@@ -90,8 +93,7 @@ async def _(bot: Bot, event: GroupMessageEvent, arg: Message = CommandArg()):
 
 
 @on_command(
-    '/'+KEYWORDS['pk'][0],
-    aliases=set('/'+i for i in KEYWORDS['pk'][1:]),
+    '/pk',
     priority=15,
     block=True
 ).handle()
@@ -101,8 +103,8 @@ async def _(bot: Bot, event: GroupMessageEvent):
 
 
 @on_command(
-    '/'+KEYWORDS['lock_me'][0],
-    aliases=set('/'+i for i in KEYWORDS['lock_me'][1:]),
+    '/🔒我',
+    aliases={"/suo我", "/嗦我", "/锁我"},
     priority=15,
     block=True
 ).handle()
@@ -112,8 +114,8 @@ async def _(bot: Bot, event: GroupMessageEvent):
 
 
 @on_command(
-    '/'+KEYWORDS['lock'][0],
-    aliases=set('/'+i for i in KEYWORDS['lock'][1:]),
+    '/🔒',
+    aliases={"/suo", "/嗦", "/锁"},
     priority=15,
     block=True
 ).handle()
@@ -123,8 +125,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
 
 
 @on_command(
-    '/'+KEYWORDS['glue'][0],
-    aliases=set('/'+i for i in KEYWORDS['glue'][1:]),
+    '/打胶',
     priority=15,
     block=True
 ).handle()
@@ -134,8 +135,8 @@ async def _(bot: Bot, event: GroupMessageEvent):
 
 
 @on_command(
-    '/'+KEYWORDS['see_chinchin'][0],
-    aliases=set('/'+i for i in KEYWORDS['see_chinchin'][1:]),
+    '/看他牛子',
+    aliases={"/看看牛子"},
     priority=15,
     block=True
 ).handle()
@@ -145,13 +146,45 @@ async def _(bot: Bot, event: GroupMessageEvent):
 
 
 @on_command(
-    '/'+KEYWORDS['sign_up'][0],
-    aliases=set('/'+i for i in KEYWORDS['sign_up'][1:]),
+    '/注册牛子',
     priority=15,
     block=True
 ).handle()
 async def _(bot: Bot, event: GroupMessageEvent):
     dicky_run(KEYWORDS['sign_up'][0], bot, event)
+    return
+
+
+@on_command(
+    '/牛友',
+    aliases={"/牛子好友", "/牛子朋友"},
+    priority=15,
+    block=True
+).handle()
+async def _(bot: Bot, event: GroupMessageEvent):
+    dicky_run(KEYWORDS['friends'][0], bot, event)
+    return
+
+
+@on_command(
+    '/关注牛子',
+    aliases={"/添加牛友"},
+    priority=15,
+    block=True
+).handle()
+async def _(bot: Bot, event: GroupMessageEvent):
+    dicky_run(KEYWORDS['friends_add'][0], bot, event)
+    return
+
+
+@on_command(
+    '/取关牛子',
+    aliases={"/删除牛友"},
+    priority=15,
+    block=True
+).handle()
+async def _(bot: Bot, event: GroupMessageEvent):
+    dicky_run(KEYWORDS['friends_delete'][0], bot, event)
     return
 
 

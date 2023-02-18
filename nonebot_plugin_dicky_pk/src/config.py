@@ -91,6 +91,9 @@ class Config:
 
     @classmethod
     def is_pk_win(cls, user_length: float, target_length: float):
+        """
+        TODO: 限制一下强者挑战弱者，900cm 挑战 100cm 存在输的可能性，但是 100cm 挑战 900cm 必输。
+        """
         range = cls.get_config("pk_unstable_range_v2")
         edge = cls.get_config("pk_unstable_range_v2_edge")
         min_edge = edge[0]

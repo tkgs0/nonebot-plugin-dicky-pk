@@ -88,11 +88,13 @@ class ArrowUtil:
         return start_timestamp <= now_timestamp <= end_timestamp
 
     @staticmethod
-    def get_time_with_shift(time: str, shift_mins: int):
+    def get_time_with_shift(time: str, shift_mins: int = 0, shift_days: int = 0):
         """
         start_time: YYYY-MM-DD HH:mm:ss
         duration: minutes
         """
+        if shift_days:
+            shift_mins += shift_days * 24 * 60
         return arrow_get(time).shift(minutes=shift_mins).format("YYYY-MM-DD HH:mm:ss")
 
     @staticmethod
@@ -119,6 +121,18 @@ class ArrowUtil:
         if is_this_year:
             return ins.format("MM-DD HH:mm")
         return ins.format("YYYY-MM-DD HH:mm")
+
+    @staticmethod
+    def get_time_diff_days(time_1: str, time_2: str):
+        """
+        time_1 - time_2
+        """
+        time_1 = arrow_get(time_1).format("YYYY-MM-DD")
+        time_2 = arrow_get(time_2).format("YYYY-MM-DD")
+        return int(
+            (arrow_get(time_1).int_timestamp - arrow_get(time_2).int_timestamp)
+            / (60 * 60 * 24)
+        )
 
 
 class Random:

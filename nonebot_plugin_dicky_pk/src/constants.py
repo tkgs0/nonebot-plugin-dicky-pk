@@ -4,6 +4,9 @@ class OpFrom:
     PK_WIN = "pk_win_weight"
     PK_LOSE = "pk_lose_weight"
 
+    # pk 来源方 length 加成
+    PK_FROM_LENGTH = 'pk_from_length_weight'
+
     LOCK = "lock_weight"
     LOCK_ME = "lock_me_weight"
     LOCK_WITH_TARGET = "lock_with_target_weight"
@@ -11,8 +14,12 @@ class OpFrom:
     GLUE = "glue_weight"
     GLUE_ME = "glue_me_weight"
     GLUE_WITH_TARGET = "glue_with_target_weight"
+    GLUE_WITH_TARGET_SUCCESS = "glue_with_target_success_weight"
+    GLUE_WITH_TARGET_FAIL = "glue_with_target_fail_weight"
 
     FARM_OVER = "farm_over_weight"
+
+    FRIENDS_COLLECT = "friends_collect_weight"
 
     OTHER = "other_weight"
 
@@ -22,7 +29,7 @@ class OpFrom:
 
     @classmethod
     def is_glue(cls, op=None):
-        return op in [cls.GLUE, cls.GLUE_ME, cls.GLUE_WITH_TARGET]
+        return op in [cls.GLUE, cls.GLUE_ME, cls.GLUE_WITH_TARGET, cls.GLUE_WITH_TARGET_SUCCESS, cls.GLUE_WITH_TARGET_FAIL]
 
     @classmethod
     def is_pk(cls, op=None):
