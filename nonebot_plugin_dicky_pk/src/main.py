@@ -13,7 +13,7 @@ from typing import Optional
 KEYWORDS = {
     "chinchin": ["牛子"],
     "pk": ["pk"],
-    "lock_me": ["🔒我", "suo我", "嗦我", "锁我"],
+    "lock_me": ["🔒我"],
     "lock": ["🔒", "suo", "嗦", "锁"],
     "glue": ["打胶"],
     "see_chinchin": ["看他牛子", "看看牛子"],
