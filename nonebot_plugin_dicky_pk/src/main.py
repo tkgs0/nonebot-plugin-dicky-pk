@@ -32,7 +32,7 @@ KEYWORDS = {
     "help": ["牛子帮助"],
 }
 
-VERSION = '2.6.0'
+VERSION = '2.6.1'
 HELPPER = f"牛了个牛 v{VERSION}\n可用的指令/功能有：\n" + "、".join(
     [
         KEYWORDS.get("sign_up")[0],
@@ -75,8 +75,6 @@ def message_processor(
     TODO: 物品系统
     TODO: 抽取 utils 文件的导入
     TODO: 牛子共享排行榜
-
-    TODO：朋友加成
     """
     # lazy init database
     lazy_init_database()

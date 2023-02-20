@@ -46,8 +46,22 @@ class FarmSystem:
         end_time = ArrowUtil.get_time_with_shift(
             time=start_time, shift_mins=total_duration_minutes
         )
-        is_can_play = ArrowUtil.is_now_in_time_range(start=start_time, end=end_time)
-        return is_can_play
+        # 在今天的可玩时间
+        is_can_play_with_today = ArrowUtil.is_now_in_time_range(start=start_time, end=end_time)
+        # 在昨天的后半夜可玩
+        is_duration_cross_day = ArrowUtil.is_date_outed(end_time)
+        if not is_duration_cross_day:
+            return is_can_play_with_today
+        prev_start_time = ArrowUtil.get_time_with_shift(
+            start_time, shift_days=-1
+        )
+        prev_end_time = ArrowUtil.get_time_with_shift(
+            prev_start_time, shift_mins=total_duration_minutes
+        )
+        is_can_play_with_prev_day = ArrowUtil.is_now_in_time_range(
+            start=prev_start_time, end=prev_end_time
+        )
+        return is_can_play_with_today or is_can_play_with_prev_day
 
     @classmethod
     def is_current_planting(cls, qq: int):
