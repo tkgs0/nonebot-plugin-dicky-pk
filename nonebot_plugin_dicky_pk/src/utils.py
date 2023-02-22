@@ -1,6 +1,7 @@
 import arrow
 import random
 import secrets
+from decimal import Decimal
 
 
 def arrow_now():
@@ -165,3 +166,24 @@ class Random:
         if len(cls.nums) == 0:
             cls.fill()
         return cls.nums.pop()
+
+class NumberUtils():
+
+    @classmethod
+    def plus(cls, a: float, b: float):
+        ret = Decimal(a) + Decimal(b)
+        if cls.is_zero(ret):
+            return 0
+        return float(ret)
+    
+    @classmethod
+    def minus(cls, a: float, b: float):
+        ret = Decimal(a) - Decimal(b)
+        if cls.is_zero(ret):
+            return 0
+        return float(ret)
+    
+    @staticmethod
+    def is_zero(a: float):
+        return Decimal(a).quantize(Decimal('0.000')) == 0
+    

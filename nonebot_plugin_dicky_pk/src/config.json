@@ -129,6 +129,15 @@
         "fail_prob": 0.9,
         "fail_negative_min": 80,
         "fail_negative_max": 240
+      },
+      {
+        "level": 5,
+        "name": "5转牛仙",
+        "cost_length": 600,
+        "weight": 3.5,
+        "fail_prob": 0.95,
+        "fail_negative_min": 160,
+        "fail_negative_max": 480
       }
     ]
   },

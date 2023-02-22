@@ -1,5 +1,5 @@
 from pathlib import Path
-from .utils import ArrowUtil, fixed_two_decimal_digits
+from .utils import ArrowUtil, fixed_two_decimal_digits, NumberUtils
 from .config import Config
 from .rebirth_view import RebirthSystem_View
 from .constants import FarmConst, TimeConst
@@ -822,6 +822,18 @@ class DB:
 
     utils = DataUtils()
 
+    @classmethod
+    def make_sure_user_length_not_zero(cls, qq: int):
+        """
+            解决历史数据有 < 2.8e-17 的问题
+        """
+        data = cls.load_data(qq)
+        if data is None:
+            return
+        if NumberUtils.is_zero(data['length']):
+            data['length'] = 0
+            cls.write_data(data)
+
     @staticmethod
     def create_data(data: dict):
         Sql.insert_single_data(data)
@@ -855,11 +867,15 @@ class DB:
         only allow `main.py` call
         """
         user_data = cls.load_data(qq)
-        user_data["length"] += length
-        # ensure fixed 2
-        user_data["length"] = fixed_two_decimal_digits(
-            user_data["length"], to_number=True
+        # accuracy
+        length_result = NumberUtils.plus(
+            user_data["length"], length
         )
+        # ensure fixed 2
+        length_result = fixed_two_decimal_digits(
+            length_result, to_number=True
+        )
+        user_data["length"] = length_result
         cls.write_data(user_data)
 
     @classmethod
@@ -885,7 +901,10 @@ class DB:
         will_punish_length = fixed_two_decimal_digits(
             will_punish_length, to_number=True
         )
-        user_data["length"] -= will_punish_length
+        # accuracy
+        user_data["length"] = NumberUtils.minus(
+            user_data["length"], will_punish_length
+        )
         cls.write_data(user_data)
 
     @classmethod
