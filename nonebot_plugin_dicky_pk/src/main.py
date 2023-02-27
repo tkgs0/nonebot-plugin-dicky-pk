@@ -32,7 +32,7 @@ KEYWORDS = {
     "help": ["牛子帮助"],
 }
 
-VERSION = '2.6.3'
+VERSION = '2.6.4'
 HELPPER = f"牛了个牛 v{VERSION}\n可用的指令/功能有：\n" + "、".join(
     [
         KEYWORDS.get("sign_up")[0],

@@ -179,8 +179,8 @@ class BadgeSystem:
         if not current_not_has_badges:
             return None
         # change database
-        new_badge_ids = [str(i["id"]) for i in current_not_has_badges]
-        badge_ids = ",".join(new_badge_ids)
+        new_badge_ids = [i["id"] for i in current_not_has_badges]
+        badge_ids = ",".join(map(str, sorted(new_badge_ids + current_has_badges_id)))
         DB.sub_db_badge.update_badge_ids(qq, badge_ids)
         # return msg
         new_badge_names = [i["name"] for i in current_not_has_badges]
