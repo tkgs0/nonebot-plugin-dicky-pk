@@ -32,7 +32,7 @@ KEYWORDS = {
     "help": ["牛子帮助"],
 }
 
-VERSION = '2.6.4'
+VERSION = '2.6.5'
 HELPPER = f"牛了个牛 v{VERSION}\n可用的指令/功能有：\n" + "、".join(
     [
         KEYWORDS.get("sign_up")[0],
@@ -962,7 +962,8 @@ class Chinchin_friends:
             message_arr = ["他不是你的牛友，又开始了是吧。"]
             return send_message(qq, group, join(message_arr, "\n"))
         # 删除朋友
-        nickname = friends_data.get("latest_speech_nickname")
+        target_user = DB.sub_db_info.get_user_info(at_qq)
+        nickname = target_user.get("latest_speech_nickname")
         if not nickname:
             nickname = "无名英雄"
         message_arr = [
