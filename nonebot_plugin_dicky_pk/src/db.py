@@ -739,8 +739,7 @@ class Sql:
         if sql_ins:
             return sql_ins
         Paths.base_db_dir().mkdir(parents=True, exist_ok=True)
-        if not Paths.sqlite_path().is_file():
-            Paths.sqlite_path().write_text('')
+        Paths.sqlite_path().touch(exist_ok=True)
         sql_ins = Sql()
         sql_ins.check_table_exists()
         MigrationHelper.old_data_check()
