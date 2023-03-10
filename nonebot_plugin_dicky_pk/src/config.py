@@ -4,20 +4,26 @@ from .utils import fixed_two_decimal_digits, Random
 from .config_parser import TimeParser
 
 
-config_template = Path(__file__).parent / 'config.json'
-config_file_path = Path() / 'configs' / 'Dicky_PK.json'
+config_template = json.loads(
+    (Path(__file__).parent / 'config.json').read_text('utf-8')
+)
+config_file_path: Path = Path() / 'configs' / 'Dicky_PK.json'
 config_file_path.parent.mkdir(parents=True, exist_ok=True)
-if not config_file_path.is_file() or \
-    json.loads(config_file_path.read_text('utf-8')).keys() != json.loads(config_template.read_text('utf-8')).keys():
+
+def config_file():
+    return json.loads(config_file_path.read_text('utf-8'))
+
+if config_file().keys() != config_template.keys():
     config_file_path.write_text(
         json.dumps(
-            json.loads(config_template.read_text('utf-8')),
+            config_template,
             ensure_ascii=False,
             escape_forward_slashes=False,
             indent=2
         ),
         encoding='utf-8'
     )
+
 cache = None
 
 
@@ -29,9 +35,8 @@ class Config:
     def read_config():
         # TODO: 检测 config.json 变化重新加载
         global cache
-        if cache:
-            return cache
-        cache = json.loads(config_file_path.read_text('utf-8'))
+        if not cache:
+            cache = config_file()
         return cache
 
     @staticmethod
