@@ -13,7 +13,8 @@ config_file_path.parent.mkdir(parents=True, exist_ok=True)
 def config_file():
     return json.loads(config_file_path.read_text('utf-8'))
 
-if config_file().keys() != config_template.keys():
+if not config_file_path.is_file() or \
+        config_file().keys() != config_template.keys():
     config_file_path.write_text(
         json.dumps(
             config_template,
