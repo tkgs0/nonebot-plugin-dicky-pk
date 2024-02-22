@@ -2,6 +2,7 @@ import asyncio
 from pathlib import Path
 import ujson as json
 from nonebot import on_command
+from nonebot.plugin import PluginMetadata
 from nonebot.params import CommandArg
 from nonebot.permission import SUPERUSER
 from nonebot.adapters.onebot.v11 import (
@@ -17,6 +18,39 @@ from nonebot.adapters.onebot.v11 import (
 from .src.main import KEYWORDS, message_processor as chinchin
 
 
+usage: str = """
+
+指令表:
+    /开启(关闭)牛子秘境
+    /牛子帮助
+    /启用(禁用)牛子pk
+    /牛子
+    /pk @用户
+    /🔒(/suo/嗦/锁)我
+    /🔒(/suo/嗦/锁) @用户
+    /打胶
+    /看他牛子(/看看牛子) @用户
+    /注册牛子
+    /牛子排名(/牛子排行)
+    /牛友(/牛子好友/牛子朋友)
+    /关注牛子(/添加牛友)
+    /取关牛子(/删除牛友)
+    /牛子转生
+    /牛子成就
+    /牛子仙境
+    /牛子修炼(/牛子练功/牛子修仙)
+
+""".strip()
+
+
+__plugin_meta__ = PluginMetadata(
+    name="牛子PK",
+    description="🥵",
+    usage=usage,
+    type="application"
+)
+
+
 confpath = Path() / 'data' / 'chinchin_pk' / 'chinchin.json'
 confpath.parent.mkdir(parents=True, exist_ok=True)
 
@@ -29,25 +63,6 @@ enablelist = (
 
 def save_conf():
     confpath.write_text(json.dumps(enablelist), encoding='utf-8')
-
-
-_help = [
-    '/牛子',
-    '/pk @用户',
-    '/🔒(/suo/嗦/锁)我',
-    '/🔒(/suo/嗦/锁) @用户',
-    '/打胶',
-    '/看他牛子(/看看牛子) @用户',
-    '/注册牛子',
-    '/牛子排名(/牛子排行)',
-    '/牛友(/牛子好友/牛子朋友)',
-    '/关注牛子(/添加牛友)',
-    '/取关牛子(/删除牛友)',
-    '/牛子转生',
-    '/牛子成就',
-    '/牛子仙境',
-    '/牛子修炼(/牛子练功/牛子修仙)',
-]
 
 
 def dicky_run(msg: str, bot: Bot, event: GroupMessageEvent):
@@ -87,7 +102,7 @@ async def _(bot: Bot, event: GroupMessageEvent, arg: Message = CommandArg()):
     if not event.group_id in enablelist['group']:
         return
     if (msg := arg.extract_plain_text()).startswith('帮助'):
-        await get_chinchin.finish('\n'.join(_help))
+        await get_chinchin.finish(usage)
     dicky_run('牛子'+msg, bot, event)
     return
 
