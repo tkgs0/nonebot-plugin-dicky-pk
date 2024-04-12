@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nonebot-plugin-dicky-pk"
-version = "0.5.0"
+version = "0.5.1"
 description = "Dicky-PK in NoneBot2"
 authors = ["月ヶ瀬"]
 license = "MIT"
