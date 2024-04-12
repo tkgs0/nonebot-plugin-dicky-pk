@@ -47,7 +47,8 @@ __plugin_meta__ = PluginMetadata(
     name="牛子PK",
     description="🥵",
     usage=usage,
-    type="application"
+    type="application",
+    homepage="https://github.com/tkgs0/nonebot-plugin-dicky-pk"
 )
 
 
