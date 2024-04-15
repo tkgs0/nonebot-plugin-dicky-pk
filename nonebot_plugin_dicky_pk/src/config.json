@@ -117,7 +117,7 @@
         "name": "3转牛尊",
         "cost_length": 400,
         "weight": 2.5,
-        "fail_prob": 0.8,
+        "fail_prob": 0.6,
         "fail_negative_min": 40,
         "fail_negative_max": 120
       },
@@ -126,7 +126,7 @@
         "name": "4转牛圣",
         "cost_length": 500,
         "weight": 3,
-        "fail_prob": 0.9,
+        "fail_prob": 0.8,
         "fail_negative_min": 80,
         "fail_negative_max": 240
       },
@@ -135,7 +135,7 @@
         "name": "5转牛仙",
         "cost_length": 600,
         "weight": 3.5,
-        "fail_prob": 0.95,
+        "fail_prob": 0.99,
         "fail_negative_min": 160,
         "fail_negative_max": 480
       }
