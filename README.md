@@ -23,6 +23,9 @@ _✨ NoneBot Dicky-PK ✨_
 <a href="https://nonebot.dev">
     <img src="https://img.shields.io/badge/nonebot-2.3.1+-red.svg" alt="nonebot">
 </a>
+<a href="https://github.com/Mrs4s/go-cqhttp">
+    <img src="https://img.shields.io/badge/gocq-1.1.0+-blueviolet.svg" alt="go-cqhttp">
+</a>
 
 </div>
 
