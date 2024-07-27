@@ -18,7 +18,10 @@ _✨ NoneBot Dicky-PK ✨_
     <img src="https://img.shields.io/pypi/v/nonebot-plugin-dicky-pk.svg" alt="pypi">
 </a>
 <a href="https://www.python.org">
-    <img src="https://img.shields.io/badge/python-3.8+-blue.svg" alt="python">
+    <img src="https://img.shields.io/badge/python-3.9+-blue.svg" alt="python">
+</a>
+<a href="https://nonebot.dev">
+    <img src="https://img.shields.io/badge/nonebot-2.3.1+-red.svg" alt="nonebot">
 </a>
 
 </div>
