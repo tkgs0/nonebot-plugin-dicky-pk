@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nonebot-plugin-dicky-pk"
-version = "0.5.4"
+version = "0.6.0"
 description = "Dicky-PK in NoneBot2"
 authors = ["月ヶ瀬"]
 license = "MIT"
@@ -13,9 +13,9 @@ repository = "https://github.com/tkgs0/nonebot-plugin-dicky-pk"
 keywords = ["NoneBot", "Dicky-PK"]
 
 [tool.poetry.dependencies]
-python = "^3.8"
-nonebot-adapter-onebot = "^2.2.0"
-nonebot2 = "^2.0.1"
+python = "^3.9"
+nonebot-adapter-onebot = "^2.4.1"
+nonebot2 = "^2.3.1"
 arrow = ">=1.2.3"
 dbutils = ">=3.0.2"
 ujson = ">=5.2.0"
@@ -23,7 +23,7 @@ ujson = ">=5.2.0"
 [tool.poetry.dev-dependencies]
 
 [tool.mypy]
-python_version = "3.8"
+python_version = "3.9"
 ignore_missing_imports = true
 implicit_reexport = true
 pretty = true
