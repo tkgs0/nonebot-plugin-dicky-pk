@@ -6,9 +6,13 @@
   "dependencyDashboard": false,
   "rangeStrategy": "bump",
   "enabledManagers": [
+    "github-actions",
     "poetry",
-    "github-actions"
+    "pre-commit"
   ],
+  "pre-commit": {
+    "enabled": true
+  },
   "packageRules": [
     {
       "matchPackagePatterns": [
@@ -36,6 +40,12 @@
         "dependencies",
         "breaking"
       ]
+    },
+    {
+      "description": "disable python updates for poetry manager",
+      "matchPackageNames": ["python"],
+      "matchManagers": ["poetry"],
+      "enabled": false
     }
   ]
 }
