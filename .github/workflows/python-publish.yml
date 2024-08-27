@@ -2,8 +2,9 @@
 name: Publish Python 🐍 distributions 📦 to PyPI
 
 on:
-  release:
-    types: [published]
+  push:
+    tags:
+      - '*'
 
 jobs:
   deploy:
@@ -27,4 +28,3 @@ jobs:
       with:
         user: __token__
         password: ${{ secrets.PYPI_API_TOKEN }}
-
