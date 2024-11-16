@@ -21,24 +21,24 @@ from .src.main import KEYWORDS, message_processor as chinchin
 usage: str = """
 
 指令表:
-    /开启(关闭)牛子秘境
-    /牛子帮助
-    /启用(禁用)牛子pk
-    /牛子
-    /pk @用户
-    /🔒(/suo/嗦/锁)我
-    /🔒(/suo/嗦/锁) @用户
-    /打胶
-    /看他牛子(/看看牛子) @用户
-    /注册牛子
-    /牛子排名(/牛子排行)
-    /牛友(/牛子好友/牛子朋友)
-    /关注牛子(/添加牛友)
-    /取关牛子(/删除牛友)
-    /牛子转生
-    /牛子成就
-    /牛子仙境
-    /牛子修炼(/牛子练功/牛子修仙)
+    开启(关闭)牛子秘境
+    牛子帮助
+    启用(禁用)牛子pk
+    牛子
+    pk @用户
+    🔒(suo/嗦/锁)我
+    🔒(suo/嗦/锁) @用户
+    打胶
+    看他牛子(看看牛子) @用户
+    注册牛子
+    牛子排名(牛子排行)
+    牛友(牛子好友/牛子朋友)
+    关注牛子(添加牛友)
+    取关牛子(删除牛友)
+    牛子转生
+    牛子成就
+    牛子仙境
+    牛子修炼(牛子练功/牛子修仙)
 
 """.strip()
 
@@ -92,9 +92,9 @@ def dicky_run(msg: str, bot: Bot, event: GroupMessageEvent):
 
 
 get_chinchin = on_command(
-    '/牛子',
+    '牛子',
     priority=15,
-    block=True
+    block=False
 )
 
 @get_chinchin.handle()
@@ -110,9 +110,9 @@ async def _(bot: Bot, event: GroupMessageEvent, arg: Message = CommandArg()):
 
 
 @on_command(
-    '/pk',
+    'pk',
     priority=15,
-    block=True
+    block=False
 ).handle()
 async def _(bot: Bot, event: GroupMessageEvent):
     dicky_run(KEYWORDS['pk'][0], bot, event)
@@ -120,10 +120,10 @@ async def _(bot: Bot, event: GroupMessageEvent):
 
 
 @on_command(
-    '/🔒我',
-    aliases={"/suo我", "/嗦我", "/锁我"},
+    '🔒我',
+    aliases={"suo我", "嗦我", "锁我"},
     priority=15,
-    block=True
+    block=False
 ).handle()
 async def _(bot: Bot, event: GroupMessageEvent):
     dicky_run(KEYWORDS['lock_me'][0], bot, event)
@@ -131,10 +131,10 @@ async def _(bot: Bot, event: GroupMessageEvent):
 
 
 @on_command(
-    '/🔒',
-    aliases={"/suo", "/嗦", "/锁"},
+    '🔒',
+    aliases={"suo", "嗦", "锁"},
     priority=15,
-    block=True
+    block=False
 ).handle()
 async def _(bot: Bot, event: GroupMessageEvent):
     dicky_run(KEYWORDS['lock'][0], bot, event)
@@ -142,9 +142,9 @@ async def _(bot: Bot, event: GroupMessageEvent):
 
 
 @on_command(
-    '/打胶',
+    '打胶',
     priority=15,
-    block=True
+    block=False
 ).handle()
 async def _(bot: Bot, event: GroupMessageEvent):
     dicky_run(KEYWORDS['glue'][0], bot, event)
@@ -152,10 +152,10 @@ async def _(bot: Bot, event: GroupMessageEvent):
 
 
 @on_command(
-    '/看他牛子',
-    aliases={"/看看牛子"},
+    '看他牛子',
+    aliases={"看看牛子"},
     priority=15,
-    block=True
+    block=False
 ).handle()
 async def _(bot: Bot, event: GroupMessageEvent):
     dicky_run(KEYWORDS['see_chinchin'][0], bot, event)
@@ -163,9 +163,9 @@ async def _(bot: Bot, event: GroupMessageEvent):
 
 
 @on_command(
-    '/注册牛子',
+    '注册牛子',
     priority=15,
-    block=True
+    block=False
 ).handle()
 async def _(bot: Bot, event: GroupMessageEvent):
     dicky_run(KEYWORDS['sign_up'][0], bot, event)
@@ -173,9 +173,9 @@ async def _(bot: Bot, event: GroupMessageEvent):
 
 
 @on_command(
-    '/牛友',
+    '牛友',
     priority=15,
-    block=True
+    block=False
 ).handle()
 async def _(bot: Bot, event: GroupMessageEvent):
     dicky_run(KEYWORDS['friends'][0], bot, event)
@@ -183,10 +183,10 @@ async def _(bot: Bot, event: GroupMessageEvent):
 
 
 @on_command(
-    '/关注牛子',
-    aliases={"/添加牛友"},
+    '关注牛子',
+    aliases={"添加牛友"},
     priority=15,
-    block=True
+    block=False
 ).handle()
 async def _(bot: Bot, event: GroupMessageEvent):
     dicky_run(KEYWORDS['friends_add'][0], bot, event)
@@ -194,10 +194,10 @@ async def _(bot: Bot, event: GroupMessageEvent):
 
 
 @on_command(
-    '/取关牛子',
-    aliases={"/删除牛友"},
+    '取关牛子',
+    aliases={"删除牛友"},
     priority=15,
-    block=True
+    block=False
 ).handle()
 async def _(bot: Bot, event: GroupMessageEvent):
     dicky_run(KEYWORDS['friends_delete'][0], bot, event)
@@ -214,8 +214,8 @@ def set_enable(gid: int, en: bool):
 
 
 enable_jjpk = on_command(
-    '/启用牛子pk',
-    aliases={'/开启牛子pk', '/启用dicky-pk', '/开启dicky-pk'},
+    '启用牛子pk',
+    aliases={'开启牛子pk', '启用dicky-pk', '开启dicky-pk'},
     permission=GROUP_ADMIN | GROUP_OWNER | SUPERUSER,
     priority=5,
     block=True
@@ -230,8 +230,8 @@ async def _(event: GroupMessageEvent):
 
 
 disable_jjpk = on_command(
-    '/禁用牛子pk',
-    aliases={'/关闭牛子pk', '/禁用dicky-pk', '/关闭dicky-pk'},
+    '禁用牛子pk',
+    aliases={'关闭牛子pk', '禁用dicky-pk', '关闭dicky-pk'},
     permission=GROUP_ADMIN | GROUP_OWNER | SUPERUSER,
     priority=5,
     block=True
@@ -246,7 +246,7 @@ async def _(event: GroupMessageEvent):
 
 
 chinchin_enable = on_command(
-    '/开启牛子秘境',
+    '开启牛子秘境',
     permission=SUPERUSER,
     priority=2,
     block=True
@@ -264,7 +264,7 @@ async def _(event: MessageEvent):
 
 
 chinchin_disable = on_command(
-    '/关闭牛子秘境',
+    '关闭牛子秘境',
     permission=SUPERUSER,
     priority=2,
     block=True
